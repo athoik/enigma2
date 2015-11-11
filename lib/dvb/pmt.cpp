@@ -769,15 +769,18 @@ int eDVBServicePMTHandler::tune(eServiceReferenceDVB &ref, int use_decode_demux,
 	return tuneExt(ref, use_decode_demux, s, NULL, cue, simulate, service, type, descramble);
 }
 
-int eDVBServicePMTHandler::tuneExt(eServiceReferenceDVB &ref, int use_decode_demux, ePtr<iTsSource> &source, const char *streaminfo_file, eCueSheet *cue, bool simulate, eDVBService *service, serviceType type, bool descramble)
+int eDVBServicePMTHandler::tuneExt(eServiceReferenceDVB &ref, int /*use_decode_demux*/, ePtr<iTsSource> &source, const char *streaminfo_file, eCueSheet *cue, bool simulate, eDVBService *service, serviceType type, bool descramble)
 {
 	RESULT res=0;
 	m_reference = ref;
-	m_use_decode_demux = (use_decode_demux || descramble);
+
+	/* We need to m_use decode demux only when we are descrambling (demuxers > ca demuxers)
+	 * To avoid confusion with use_decode_demux now we look only descramble argument
+	 */
+	m_use_decode_demux = doDescramble = descramble;
+
 	m_no_pat_entry_delay->stop();
 	m_service_type = type;
-
-	doDescramble = descramble;
 
 		/* use given service as backup. This is used for timeshift where we want to clone the live stream using the cache, but in fact have a PVR channel */
 	m_service = service;
