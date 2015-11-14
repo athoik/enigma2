@@ -120,6 +120,19 @@ void eDebug(const char* fmt, ...)
 		fprintf(stderr, "%s\n", buf);
 }
 
+void eDebug(const int lvl, const char* fmt, ...)
+{
+	if(getenv("ENIGMA2_DEBUG"))
+	{
+		int maxlvl = atoi(getenv("ENIGMA2_DEBUG"));
+		if (maxlvl < lvl) return;
+		va_list ap;
+		va_start(ap, fmt);
+		eDebug(fmt, ap);
+		va_end(ap);
+	}
+}
+
 void eDebugNoNewLineStart(const char* fmt, ...)
 {
 	char buf[1024];
