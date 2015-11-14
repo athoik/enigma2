@@ -104,8 +104,11 @@ void eFatal(const char* fmt, ...)
 }
 
 #ifdef DEBUG
-void eDebug(const char* fmt, ...)
+extern int ENIGMA2_DEBUG;
+void eLog(const int lvl, const char* fmt, ...)
 {
+	if(ENIGMA2_DEBUG < lvl)
+		return;
 	char buf[1024];
 	struct timespec tp;
 	clock_gettime(CLOCK_MONOTONIC, &tp);
@@ -120,17 +123,20 @@ void eDebug(const char* fmt, ...)
 		fprintf(stderr, "%s\n", buf);
 }
 
-void eDebug(const int lvl, const char* fmt, ...)
+void eDebug(const char* fmt, ...)
 {
-	if(getenv("ENIGMA2_DEBUG"))
-	{
-		int maxlvl = atoi(getenv("ENIGMA2_DEBUG"));
-		if (maxlvl < lvl) return;
-		va_list ap;
-		va_start(ap, fmt);
-		eDebug(fmt, ap);
-		va_end(ap);
-	}
+	char buf[1024];
+	struct timespec tp;
+	clock_gettime(CLOCK_MONOTONIC, &tp);
+	snprintf(buf, 1024, "<%6lu.%06lu> ", tp.tv_sec, tp.tv_nsec/1000);
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(buf + strlen(buf), 1024-strlen(buf), fmt, ap);
+	va_end(ap);
+	singleLock s(DebugLock);
+	logOutput(lvlDebug, std::string(buf) + "\n");
+	if (logOutputConsole)
+		fprintf(stderr, "%s\n", buf);
 }
 
 void eDebugNoNewLineStart(const char* fmt, ...)

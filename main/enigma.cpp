@@ -168,6 +168,9 @@ void catchTermSignal()
 		perror("SIGTERM");
 }
 
+// for access enigma debug level
+extern int ENIGMA2_DEBUG = 0;
+
 int main(int argc, char **argv)
 {
 #ifdef MEMLEAK_CHECK
@@ -184,6 +187,10 @@ int main(int argc, char **argv)
 	setenv("PYTHONPATH", eEnv::resolve("${libdir}/enigma2/python").c_str(), 0);
 	printf("PYTHONPATH: %s\n", getenv("PYTHONPATH"));
 	printf("DVB_API_VERSION %d DVB_API_VERSION_MINOR %d\n", DVB_API_VERSION, DVB_API_VERSION_MINOR);
+
+	// get enigma2 debug level
+	ENIGMA2_DEBUG = getenv("ENIGMA2_DEBUG") ? atoi(getenv("ENIGMA2_DEBUG")) : 0;
+	printf("ENIGMA2_DEBUG: %d\n", ENIGMA2_DEBUG);
 
 	bsodLogInit();
 
