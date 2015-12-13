@@ -987,7 +987,7 @@ int eMPEGStreamParserTS::processPacket(const unsigned char *pkt, off_t offset)
 					}
 				}
 			}
-			else /* (m_streamtype == 1) means H.264 */
+			else if (m_streamtype == 1) /* H.264 */
 			{
 				if (sc == 0x09)
 				{
@@ -1003,6 +1003,25 @@ int eMPEGStreamParserTS::processPacket(const unsigned char *pkt, off_t offset)
 						{
 							addAccessPoint(offset, pts);
 							// eDebug("[eMPEGStreamParserTS] MPEG4 AVC UAD at %llx, pts %llx", offset, pts);
+						}
+					}
+				}
+			}
+			else if (m_streamtype == 6) /* H.265 */
+			{
+				if (sc == 0x46) /* H265 NAL unit access delimiter */
+				{
+					/* store image type */
+					unsigned long long data = sc | (pkt[5] << 8);
+					if (ptsvalid) // If available, add timestamp data as well. PTS = 33 bits
+						data |= (pts << 31) | 0x1000000;
+					writeStructureEntry(offset + pkt_offset, data);
+					if ((pkt[5] >> 5) == 0) /* check pic_type for I-frame */
+					{
+						if (ptsvalid && m_enable_accesspoints)
+						{
+							addAccessPoint(offset, pts);
+							// eDebug("[eMPEGStreamParserTS] H.265 HEVC UAD at %llx, pts %llx", offset, pts);
 						}
 					}
 				}

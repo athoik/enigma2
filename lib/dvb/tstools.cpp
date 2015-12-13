@@ -823,14 +823,14 @@ int eDVBTSTools::findFrame(off_t &_offset, size_t &len, int &direction, int fram
 			/* we know that we aren't recording startcode 0x09 for mpeg2, so this is safe */
 			/* TODO: check frame_types */
 		// is_frame
-		if (((data & 0xFF) == 0x0009) || ((data & 0xFF) == 0x00)) /* H.264 UAD or MPEG2 start code */
+		if (((data & 0xFF) == 0x0009) || ((data & 0x7E) == 0x0046) || ((data & 0xFF) == 0x00)) /* H.264 UAD or H.265 UAD or MPEG2 start code */
 		{
 			++nr_frames;
-			if ((data & 0xE0FF) == 0x0009)		/* H.264 NAL unit access delimiter with I-frame*/
+			if ((data & 0xE0FF) == 0x0009 || (data & 0xE07E) == 0x0046) /* H.264 or H.265 NAL unit access delimiter with I-frame*/
 			{
 				break;
 			}
-			if ((data & 0x3800FF) == 0x080000)	/* MPEG2 picture start code with I-frame */
+			else if ((data & 0x3800FF) == 0x080000) /* MPEG2 picture start code with I-frame */
 			{
 				is_mpeg2 = true;
 				break;
@@ -852,7 +852,7 @@ int eDVBTSTools::findFrame(off_t &_offset, size_t &len, int &direction, int fram
 		}
 		data = ((unsigned int)longdata) & 0xFF;
 	}
-	while ((data != 0x09) && (data != 0x00)); /* next frame */
+	while ((data != 0x09) && ((data & 0x7E) != 0x46) && (data != 0x00)); /* next frame */
 
 	if (is_mpeg2)
 	{
