@@ -9,6 +9,7 @@
 #include <lib/dvb/dvb.h>
 #include <lib/dvb/sec.h>
 #include <lib/dvb/specs.h>
+#include <lib/dvb/fbc.h>
 #include "filepush.h"
 
 #include <errno.h>
@@ -34,6 +35,14 @@ eDVBAllocatedFrontend::eDVBAllocatedFrontend(eDVBRegisteredFrontend *fe): m_fe(f
 eDVBAllocatedFrontend::~eDVBAllocatedFrontend()
 {
 	m_fe->dec_use();
+	if (m_fe->m_frontend->is_FBCTuner())
+	{
+		eFBCTunerManager* fbcmng = eFBCTunerManager::getInstance();
+		if (fbcmng)
+		{
+			fbcmng->unset(m_fe);
+		}
+	}
 }
 
 DEFINE_REF(eDVBAllocatedDemux);

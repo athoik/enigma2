@@ -2,6 +2,7 @@
 #define __dvb_sec_h
 
 #include <lib/dvb/idvb.h>
+#include <lib/dvb/fbc.h>
 #include <list>
 
 #ifndef SWIG
@@ -314,6 +315,8 @@ private:
 	int m_not_linked_slot_mask;
 	int m_target_orbital_position;
 	bool m_canMeasureInputPower;
+
+	friend class eFBCTunerManager;
 #endif
 #ifdef SWIG
 	eDVBSatelliteEquipmentControl();
