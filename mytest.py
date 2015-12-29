@@ -317,10 +317,10 @@ class Session:
 			self.summary = None
 
 	def popSummary(self):
-		if self.summary is not None:
+		if self.summary:
 			self.summary.doClose()
-		self.summary = self.summary_stack.pop()
-		if self.summary is not None:
+		self.summary = self.summary_stack and self.summary_stack.pop()
+		if self.summary:
 			self.summary.show()
 
 profile("Standby,PowerKey")
@@ -552,6 +552,7 @@ Components.UsageConfig.InitUsageConfig()
 profile("keymapparser")
 import keymapparser
 keymapparser.readKeymap(config.usage.keymap.value)
+keymapparser.readKeymap(config.usage.keytrans.value)
 
 profile("Network")
 import Components.Network
