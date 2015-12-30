@@ -770,7 +770,7 @@ void eDVBResourceManager::setFrontendType(int index, const char *type)
 RESULT eDVBResourceManager::allocateFrontend(ePtr<eDVBAllocatedFrontend> &fe, ePtr<iDVBFrontendParameters> &feparm, bool simulate)
 {
 	eSmartPtrList<eDVBRegisteredFrontend> &frontends = simulate ? m_simulate_frontend : m_frontend;
-	ePtr<eDVBRegisteredFrontend> best;
+	eDVBRegisteredFrontend *best = NULL;
 	int bestval = 0;
 	int foundone = 0;
 
@@ -803,7 +803,7 @@ RESULT eDVBResourceManager::allocateFrontend(ePtr<eDVBAllocatedFrontend> &fe, eP
 			if (c > bestval)
 			{
 				bestval = c;
-				best = i;
+				best = *i;
 				best_fbc_fe = fbc_fe;
 			}
 		}
@@ -815,7 +815,7 @@ RESULT eDVBResourceManager::allocateFrontend(ePtr<eDVBAllocatedFrontend> &fe, eP
 	{
 		if (fbcmng && best_fbc_fe)
 		{
-			fbcmng->addLink((eDVBRegisteredFrontend*)*best, best_fbc_fe, simulate);
+			fbcmng->addLink(best, best_fbc_fe, simulate);
 		}
 
 		fe = new eDVBAllocatedFrontend(best);

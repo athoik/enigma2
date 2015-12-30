@@ -68,7 +68,7 @@ int eFBCTunerManager::getFBCTunerNum()
 	{
 		sprintf(filename, "/proc/stb/frontend/%d/fbc_id", fbc_frontend_num);
 		if(::access(filename, F_OK) == 0)
-			fbc_tuner_num++;
+			fbc_frontend_num++;
 		else
 			break;
 	}
