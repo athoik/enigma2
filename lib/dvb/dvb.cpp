@@ -815,7 +815,7 @@ RESULT eDVBResourceManager::allocateFrontend(ePtr<eDVBAllocatedFrontend> &fe, eP
 	{
 		if (fbcmng && best_fbc_fe)
 		{
-			fbcmng->addLink(*best, best_fbc_fe, simulate);
+			fbcmng->addLink((eDVBRegisteredFrontend*)*best, best_fbc_fe, simulate);
 		}
 
 		fe = new eDVBAllocatedFrontend(best);
