@@ -406,6 +406,16 @@ int getUsedEncoderCount()
 }
 %}
 
+int getLinkedSlotID(int);
+%{
+int getLinkedSlotID(int fe)
+{
+	eFBCTunerManager *fbcmng = eFBCTunerManager::getInstance();
+	if (fbcmng) return fbcmng->getLinkedSlotID(fe);
+	return -1;
+}
+%}
+
 /************** temp *****************/
 
 	/* need a better place for this, i agree. */
