@@ -17,17 +17,14 @@
 #define eFecDebug(arg...)
 #endif
 
+eFBCTunerManager* eFBCTunerManager::instance = (eFBCTunerManager*)0;
 
 DEFINE_REF(eFBCTunerManager);
 
-bool eFBCTunerManager::isDestroyed = false;
-
-eFBCTunerManager::eFBCTunerManager()
+eFBCTunerManager::eFBCTunerManager(ePtr<eDVBResourceManager> res_mgr)
 {
-	ePtr<eDVBResourceManager> res_mgr;
-	eDVBResourceManager::getInstance(res_mgr);
 	m_res_mgr = res_mgr;
-
+	instance = this;
 	/* num of fbc tuner in one set */
 	m_fbc_tuner_num = getFBCTunerNum();
 	procInit();
@@ -35,7 +32,7 @@ eFBCTunerManager::eFBCTunerManager()
 
 eFBCTunerManager::~eFBCTunerManager()
 {
-	isDestroyed = true;
+	instance = (eFBCTunerManager*)0;
 }
 
 void eFBCTunerManager::procInit()

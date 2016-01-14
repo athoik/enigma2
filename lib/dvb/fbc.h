@@ -16,7 +16,7 @@ private:
 	DECLARE_REF(eFBCTunerManager);
 	ePtr<eDVBResourceManager> m_res_mgr;
 	int m_fbc_tuner_num;
-	static bool isDestroyed;
+	static eFBCTunerManager* instance;
 
 	int getFBCTunerNum();
 	void procInit();
@@ -48,7 +48,7 @@ private:
 	void printLinks(eDVBRegisteredFrontend *fe);
 
 public:
-	eFBCTunerManager();
+	eFBCTunerManager(ePtr<eDVBResourceManager> res_mgr);
 	virtual ~eFBCTunerManager();
 	int setProcFBCID(int fe_id, int fbc_id);
 	int setDefaultFBCID(eDVBRegisteredFrontend *fe);
@@ -62,18 +62,7 @@ public:
 	void addLink(eDVBRegisteredFrontend *link_fe, eDVBRegisteredFrontend *top_fe, bool simulate);
 	void unset(eDVBRegisteredFrontend *fe);
 	bool canAllocateLink(eDVBRegisteredFrontend *fe, bool simulate);
-
-	static eFBCTunerManager* getInstance()
-	{
-		if (isDestroyed == true)
-		{
-			eDebug("[eFBCTunerManager] eFBCTunerManager is already destroyed!");
-			return 0;
-		}
-		static eFBCTunerManager instance;
-		return &instance;
-	}
-
+	static eFBCTunerManager* getInstance() { return instance; }
 	int getLinkedSlotID(int feid);
 };
 
