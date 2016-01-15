@@ -71,7 +71,7 @@ int eFBCTunerManager::getFBCTunerNum()
 	}
 
 	/* 1 FBC set has 8 tuners. */
-	return fbc_frontend_num / 8;
+	return (fbc_frontend_num / (8 / 2));
 }
 
 int eFBCTunerManager::setProcFBCID(int fe_id, int fbc_id)
