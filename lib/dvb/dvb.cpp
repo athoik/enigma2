@@ -27,17 +27,18 @@ DEFINE_REF(eDVBRegisteredDemux);
 
 DEFINE_REF(eDVBAllocatedFrontend);
 
-eDVBAllocatedFrontend::eDVBAllocatedFrontend(eDVBRegisteredFrontend *fe, eFBCTunerManager *fbcmng): m_fe(fe)
+eDVBAllocatedFrontend::eDVBAllocatedFrontend(eDVBRegisteredFrontend *fe, eFBCTunerManager *fbcmng)
+	: m_fe(fe), m_fbcmng(fbcmng)
 {
 	m_fe->inc_use();
-
-	if (m_fe->m_frontend->is_FBCTuner() && fbcmng)
-		fbcmng->unset(m_fe);
 }
 
 eDVBAllocatedFrontend::~eDVBAllocatedFrontend()
 {
 	m_fe->dec_use();
+
+	if (m_fe->m_frontend->is_FBCTuner() && m_fbcmng)
+		m_fbcmng->unset(m_fe);
 }
 
 DEFINE_REF(eDVBAllocatedDemux);

@@ -83,6 +83,7 @@ public:
 
 private:
 	eDVBRegisteredFrontend *m_fe;
+	eFBCTunerManager *m_fbcmng;
 };
 
 class eDVBAllocatedDemux
