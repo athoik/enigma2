@@ -593,7 +593,6 @@ void eDVBResourceManager::addAdapter(iDVBAdapter *adapter, bool front)
 			m_demux.push_back(new eDVBRegisteredDemux(demux, adapter));
 	}
 
-	ePtr<eDVBRegisteredFrontend> prev_dvbt_frontend;
 	for (i=0; i<num_fe; ++i)
 	{
 		ePtr<eDVBFrontend> frontend;
@@ -603,42 +602,17 @@ void eDVBResourceManager::addAdapter(iDVBAdapter *adapter, bool front)
 			CONNECT(new_fe->stateChanged, eDVBResourceManager::feStateChanged);
 			m_frontend.push_back(new_fe);
 			frontend->setSEC(m_sec);
-			// we must link all dvb-t frontends ( for active antenna voltage )
-			if (frontend->supportsDeliverySystem(SYS_DVBT, false) || frontend->supportsDeliverySystem(SYS_DVBT2, false))
-			{
-				if (prev_dvbt_frontend)
-				{
-					prev_dvbt_frontend->m_frontend->setData(eDVBFrontend::LINKED_NEXT_PTR, (long)new_fe);
-					frontend->setData(eDVBFrontend::LINKED_PREV_PTR, (long)&(*prev_dvbt_frontend));
-				}
-				prev_dvbt_frontend = new_fe;
-			}
 		}
-	}
 
-	prev_dvbt_frontend = 0;
-	for (i=0; i<num_fe; ++i)
-	{
-		ePtr<eDVBFrontend> frontend;
+		frontend = 0;
 		if (!adapter->getFrontend(frontend, i, true))
 		{
 			eDVBRegisteredFrontend *new_fe = new eDVBRegisteredFrontend(frontend, adapter);
 //			CONNECT(new_fe->stateChanged, eDVBResourceManager::feStateChanged);
 			m_simulate_frontend.push_back(new_fe);
 			frontend->setSEC(m_sec);
-			// we must link all dvb-t frontends ( for active antenna voltage )
-			if (frontend->supportsDeliverySystem(SYS_DVBT, false) || frontend->supportsDeliverySystem(SYS_DVBT2, false))
-			{
-				if (prev_dvbt_frontend)
-				{
-					prev_dvbt_frontend->m_frontend->setData(eDVBFrontend::LINKED_NEXT_PTR, (long)new_fe);
-					frontend->setData(eDVBFrontend::LINKED_PREV_PTR, (long)&(*prev_dvbt_frontend));
-				}
-				prev_dvbt_frontend = new_fe;
-			}
 		}
 	}
-
 }
 
 PyObject *eDVBResourceManager::setFrontendSlotInformations(ePyObject list)
