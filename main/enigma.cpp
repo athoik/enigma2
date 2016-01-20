@@ -265,7 +265,7 @@ int main(int argc, char **argv)
 
 	gRC::getInstance()->setSpinnerDC(my_dc);
 
-	eRCInput::getInstance()->keyEvent.connect(slot(keyEvent));
+	eRCInput::getInstance()->keyEvent.connect(sigc::ptr_fun(&keyEvent));
 
 	printf("[MAIN] executing main\n");
 

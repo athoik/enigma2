@@ -62,6 +62,11 @@ static const std::string getLogBuffer()
 		return std::string(ringbuffer + begin, RINGBUFFER_SIZE - begin) + std::string(ringbuffer, ringbuffer_head);
 }
 
+static void appendToLogbuffer(int level, const std::string &log)
+{
+	addToLogbuffer(log.c_str(), log.size());
+}
+
 static void addToLogbuffer(int level, const std::string &log)
 {
 	addToLogbuffer(log.c_str(), log.size());
@@ -320,5 +325,5 @@ void bsodCatchSignals()
 
 void bsodLogInit()
 {
-	logOutput.connect(addToLogbuffer);
+	logOutput.connect(sigc::ptr_fun(&appendToLogbuffer));
 }
