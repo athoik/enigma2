@@ -98,7 +98,7 @@ int fbClass::showConsole(int state)
 	return 0;
 }
 
-int fbClass::SetMode(int nxRes, int nyRes, int nbpp)
+int fbClass::SetMode(unsigned int nxRes, unsigned int nyRes, unsigned int nbpp)
 {
 	if (fbFd < 0) return -1;
 	screeninfo.xres_virtual=screeninfo.xres=nxRes;
@@ -171,7 +171,7 @@ int fbClass::SetMode(int nxRes, int nyRes, int nbpp)
 	return 0;
 }
 
-void fbClass::getMode(int &xres, int &yres, int &bpp)
+void fbClass::getMode(unsigned int &xres, unsigned int &yres, unsigned int &bpp)
 {
 	xres = screeninfo.xres;
 	yres = screeninfo.yres;

@@ -279,7 +279,7 @@ int loadJPG(ePtr<gPixmap> &result, const char *filename, ePtr<gPixmap> alpha)
 
 	if (alpha)
 	{
-		if (((int)cinfo.output_width != alpha->surface->x) || ((int)cinfo.output_height != alpha->surface->y))
+		if ((cinfo.output_width != alpha->surface->x) || (cinfo.output_height != alpha->surface->y))
 		{
 			eWarning("[loadJPG] alpha channel size (%dx%d) must match jpeg size (%dx%d)", alpha->surface->x, alpha->surface->y, cinfo.output_width, cinfo.output_height);
 			alpha = 0;
@@ -307,7 +307,7 @@ int loadJPG(ePtr<gPixmap> &result, const char *filename, ePtr<gPixmap> alpha)
 		{
 			if (palpha)
 			{
-				for (int x = (int)cinfo.output_width; x != 0; --x)
+				for (unsigned int x = cinfo.output_width; x != 0; --x)
 				{
 					*dst++ = src[2];
 					*dst++ = src[1];
@@ -378,13 +378,13 @@ static int savePNGto(FILE *fp, gPixmap *pixmap)
 		eDebug("[ePNG] failed to allocate memory image");
 		return -5;
 	}
-	for (int i = 0; i < surface->y; ++i)
+	for (unsigned int i = 0; i < surface->y; ++i)
 	{
 		row_pointer = ((png_byte*)surface->data) + i * surface->stride;
 		if (surface->bypp == 4)
 		{
 			memcpy(cr, row_pointer, surface->stride);
-			for (int j = 0; j < surface->stride; j += 4)
+			for (unsigned int j = 0; j < surface->stride; j += 4)
 			{
 				unsigned char tmp = cr[j];
 				cr[j] = cr[j+2];

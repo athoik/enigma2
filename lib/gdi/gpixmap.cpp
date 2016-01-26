@@ -69,7 +69,7 @@ gUnmanagedSurface::gUnmanagedSurface():
 {
 }
 
-gUnmanagedSurface::gUnmanagedSurface(int width, int height, int _bpp):
+gUnmanagedSurface::gUnmanagedSurface(unsigned int width, unsigned int height, unsigned int _bpp):
 	x(width),
 	y(height),
 	bpp(_bpp),
@@ -130,7 +130,7 @@ static bool is_a_candidate_for_accel(const gUnmanagedSurface* surface)
 	}
 }
 
-gSurface::gSurface(int width, int height, int _bpp, int accel):
+gSurface::gSurface(unsigned int width, unsigned int height, unsigned int _bpp, int accel):
 	gUnmanagedSurface(width, height, _bpp)
 {
 	if ((accel > gPixmap::accelAuto) ||
@@ -799,9 +799,9 @@ void gPixmap::mergePalette(const gPixmap &target)
 
 	uint8_t *dstptr=(uint8_t*)surface->data;
 
-	for (int ay=0; ay<surface->y; ay++)
+	for (unsigned int ay=0; ay<surface->y; ay++)
 	{
-		for (int ax=0; ax<surface->x; ax++)
+		for (unsigned int ax=0; ax<surface->x; ax++)
 			dstptr[ax]=lookup[dstptr[ax]];
 		dstptr+=surface->stride;
 	}

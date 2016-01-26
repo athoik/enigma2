@@ -14,9 +14,9 @@ gFBDC::gFBDC()
 	if (!fb->Available())
 		eFatal("[gFBDC] no framebuffer available");
 
-	int xres;
-	int yres;
-	int bpp;
+	unsigned int xres;
+	unsigned int yres;
+	unsigned int bpp;
 	fb->getMode(xres, yres, bpp);
 
 	/* we can only use one of these three modes: */
@@ -175,7 +175,7 @@ void gFBDC::setGamma(int g)
 	setPalette();
 }
 
-void gFBDC::setResolution(int xres, int yres, int bpp)
+void gFBDC::setResolution(unsigned int xres, unsigned int yres, unsigned int bpp)
 {
 	if (m_pixmap && (surface.x == xres) && (surface.y == yres) && (surface.bpp == bpp))
 		return;

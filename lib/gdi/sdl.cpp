@@ -86,7 +86,7 @@ void gSDLDC::exec(const gOpcode *o)
 	}
 }
 
-void gSDLDC::setResolution(int xres, int yres)
+void gSDLDC::setResolution(unsigned int xres, unsigned int yres)
 {
 	pushEvent(EV_SET_VIDEO_MODE, (void *)xres, (void *)yres);
 }

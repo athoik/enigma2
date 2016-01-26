@@ -93,7 +93,7 @@ eFbLCD::~eFbLCD()
 	}
 }
 
-int eFbLCD::setMode(int nxRes, int nyRes, int nbpp)
+int eFbLCD::setMode(unsigned int nxRes, unsigned int nyRes, unsigned int nbpp)
 {
 	m_screeninfo.xres_virtual = m_screeninfo.xres = nxRes;
 	m_screeninfo.yres_virtual = (m_screeninfo.yres = nyRes) * 2;

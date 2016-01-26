@@ -16,7 +16,7 @@ class gFBDC: public gMainDC
 	void calcRamp();
 	void setPalette();
 public:
-	void setResolution(int xres, int yres, int bpp = 32);
+	void setResolution(unsigned int xres, unsigned int yres, unsigned int bpp = 32);
 	void reloadSettings();
 	void setAlpha(int alpha);
 	void setBrightness(int brightness);

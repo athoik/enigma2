@@ -32,8 +32,8 @@ public:
 	void enableManualBlit();
 	void disableManualBlit();
 	int showConsole(int state);
-	int SetMode(int xRes, int yRes, int bpp);
-	void getMode(int &xres, int &yres, int &bpp);
+	int SetMode(unsigned int xRes, unsigned int yRes, unsigned int bpp);
+	void getMode(unsigned int &xres, unsigned int &yres, unsigned int &bpp);
 	int Available() { return available; }
 
 	int getNumPages() { return m_number_of_pages; }

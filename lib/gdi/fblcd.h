@@ -23,7 +23,7 @@ class eFbLCD: public eLCD
 	int m_manual_blit;
 
 	void calcRamp();
-	int setMode(int xRes, int yRes, int bpp);
+	int setMode(unsigned int xRes, unsigned int yRes, unsigned int bpp);
 	void getMode();
 	void enableManualBlit();
 	void disableManualBlit();

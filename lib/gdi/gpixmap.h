@@ -149,19 +149,19 @@ struct gLookup
 
 struct gUnmanagedSurface
 {
-	int x, y, bpp, bypp, stride;
+	unsigned int x, y, bpp, bypp, stride;
 	gPalette clut;
 	void *data;
 	int data_phys;
 
 	gUnmanagedSurface();
-	gUnmanagedSurface(int width, int height, int bpp);
+	gUnmanagedSurface(unsigned int width, unsigned int height, unsigned int bpp);
 };
 
 struct gSurface: gUnmanagedSurface
 {
 	gSurface(): gUnmanagedSurface() {}
-	gSurface(int width, int height, int bpp, int accel);
+	gSurface(unsigned int width, unsigned int height, unsigned int bpp, int accel);
 	~gSurface();
 private:
 	gSurface(const gSurface&); /* Copying managed gSurface is not allowed */
