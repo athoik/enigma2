@@ -638,11 +638,7 @@ class NimSelection(Screen):
 		nim = self["nimlist"].getCurrent()
 		nim = nim and nim[3]
 
-		nimConfig = nimmanager.getNimConfig(nim.slot)
-		if nim.isFBCLink() and nimConfig.configMode.value == "loopthrough":
-			return
-
-		if nim is not None and not nim.empty and nim.isSupported():
+		if nim and not nim.empty and nim.isSupported():
 			self.session.openWithCallback(boundFunction(self.NimSetupCB, self["nimlist"].getIndex()), self.resultclass, nim.slot)
 
 	def NimSetupCB(self, index=None):
