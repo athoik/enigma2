@@ -102,7 +102,7 @@ void transponderDataToDict(ePyObject &dest, ePtr<iDVBTransponderData> data)
 		value = data->getSystem();
 		if (value >= 0) PutToDict(dest, "system", value);
 		value = data->getInputStreamId();
-		if (value >= 0) PutToDict(dest, "input_stream_id", value);
+		if (value >= 0) PutToDict(dest, "is_id", value);
 
 		/* additional terrestrial fields */
 		value = data->getBandwidth();

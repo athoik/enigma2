@@ -50,7 +50,7 @@ def getInitialTransponderList(tlist, pos):
 			parm.modulation = x[6]
 			parm.rolloff = x[8]
 			parm.pilot = x[9]
-			parm.input_stream_id = x[10]
+			parm.is_id = x[10]
 			tlist.append(parm)
 
 def getInitialCableTransponderList(tlist, nim):
@@ -683,7 +683,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 					self.list.append(self.modulationEntry)
 					self.list.append(getConfigListEntry(_('Roll-off'), self.scan_sat.rolloff))
 					self.list.append(getConfigListEntry(_('Pilot'), self.scan_sat.pilot))
-					self.list.append(getConfigListEntry(_('Input Stream ID'), self.scan_sat.input_stream_id))
+					self.list.append(getConfigListEntry(_('Input Stream ID'), self.scan_sat.is_id))
 			elif self.scan_type.value == "predefined_transponder" and self.satList[index_to_scan]:
 				self.updateSatList()
 				self.preDefSatList = getConfigListEntry(_('Satellite'), self.scan_satselection[index_to_scan])
@@ -840,7 +840,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 					defaultSat["fec_s2"] = frontendData.get("fec_inner", eDVBFrontendParametersSatellite.FEC_Auto)
 					defaultSat["rolloff"] = frontendData.get("rolloff", eDVBFrontendParametersSatellite.RollOff_alpha_0_35)
 					defaultSat["pilot"] = frontendData.get("pilot", eDVBFrontendParametersSatellite.Pilot_Unknown)
-					defaultSat["input_stream_id"] = frontendData.get("input_stream_id", 0)
+					defaultSat["is_id"] = frontendData.get("is_id", 0)
 				else:
 					defaultSat["fec"] = frontendData.get("fec_inner", eDVBFrontendParametersSatellite.FEC_Auto)
 				defaultSat["modulation"] = frontendData.get("modulation", eDVBFrontendParametersSatellite.Modulation_QPSK)
@@ -948,7 +948,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 			(eDVBFrontendParametersSatellite.Pilot_Off, _("Off")),
 			(eDVBFrontendParametersSatellite.Pilot_On, _("On")),
 			(eDVBFrontendParametersSatellite.Pilot_Unknown, _("Auto"))])
-		self.scan_sat.input_stream_id = ConfigInteger(default = defaultSat.get("input_stream_id",0), limits = (0, 255))
+		self.scan_sat.is_id = ConfigInteger(default = defaultSat.get("is_id",0), limits = (0, 255))
 
 		# cable
 		self.scan_cab.frequency = ConfigInteger(default = defaultCab["frequency"], limits = (50, 999))
@@ -1110,8 +1110,8 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 	def updateStatus(self):
 		print "updatestatus"
 
-	def addSatTransponder(self, tlist, frequency, symbol_rate, polarisation, fec, inversion, orbital_position, system, modulation, rolloff, pilot, input_stream_id):
-		print "Add Sat: frequ: " + str(frequency) + " symbol: " + str(symbol_rate) + " pol: " + str(polarisation) + " fec: " + str(fec) + " inversion: " + str(inversion) + " modulation: " + str(modulation) + " system: " + str(system) + " rolloff: " + str(rolloff) + " pilot: " + str(pilot) + " input_stream_id: " + str(input_stream_id)
+	def addSatTransponder(self, tlist, frequency, symbol_rate, polarisation, fec, inversion, orbital_position, system, modulation, rolloff, pilot, is_id):
+		print "Add Sat: frequ: " + str(frequency) + " symbol: " + str(symbol_rate) + " pol: " + str(polarisation) + " fec: " + str(fec) + " inversion: " + str(inversion) + " modulation: " + str(modulation) + " system: " + str(system) + " rolloff: " + str(rolloff) + " pilot: " + str(pilot) + " is_id: " + str(is_id)
 		print "orbpos: " + str(orbital_position)
 		parm = eDVBFrontendParametersSatellite()
 		parm.modulation = modulation
@@ -1124,7 +1124,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 		parm.orbital_position = orbital_position
 		parm.rolloff = rolloff
 		parm.pilot = pilot
-		parm.input_stream_id = input_stream_id
+		parm.is_id = is_id
 		tlist.append(parm)
 
 	def addCabTransponder(self, tlist, frequency, symbol_rate, modulation, fec, inversion):
@@ -1193,7 +1193,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 								self.scan_sat.modulation.value,
 								self.scan_sat.rolloff.value,
 								self.scan_sat.pilot.value,
-								self.scan_sat.input_stream_id.value)
+								self.scan_sat.is_id.value)
 				removeAll = False
 			elif self.scan_type.value == "predefined_transponder":
 				nimsats = self.satList[index_to_scan]

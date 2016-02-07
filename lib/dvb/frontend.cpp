@@ -105,17 +105,17 @@ void eDVBFrontendParametersSatellite::set(const SatelliteDeliverySystemDescripto
 		modulation = Modulation_QPSK;
 	}
 	rolloff = descriptor.getRollOff();
-	input_stream_id = -1;
+	is_id = -1;
 	if (system == System_DVB_S2)
 	{
-		eDebug("[eDVBFrontendParametersSatellite] SAT DVB-S2 freq %d, %s, pos %d, sr %d, fec %d, modulation %d, rolloff %d input_stream_id %d",
+		eDebug("[eDVBFrontendParametersSatellite] SAT DVB-S2 freq %d, %s, pos %d, sr %d, fec %d, modulation %d, rolloff %d is_id %d",
 			frequency,
 			polarisation ? "hor" : "vert",
 			orbital_position,
 			symbol_rate, fec,
 			modulation,
 			rolloff,
-			input_stream_id);
+			is_id);
 	}
 	else
 	{
@@ -294,7 +294,7 @@ RESULT eDVBFrontendParameters::calculateDifference(const iDVBFrontendParameters 
 				diff = 1<<29;
 			else if (sat.polarisation != osat.polarisation)
 				diff = 1<<28;
-			else if (sat.input_stream_id != osat.input_stream_id)
+			else if (sat.is_id != osat.is_id)
 				diff = 1<<27;
 			else if (exact && sat.fec != osat.fec && sat.fec != eDVBFrontendParametersSatellite::FEC_Auto && osat.fec != eDVBFrontendParametersSatellite::FEC_Auto)
 				diff = 1<<27;
@@ -1759,7 +1759,7 @@ void eDVBFrontend::setFrontend(bool recvEvents)
 				p[cmdseq.num].cmd = DTV_ROLLOFF, p[cmdseq.num].u.data = rolloff, cmdseq.num++;
 				p[cmdseq.num].cmd = DTV_PILOT, p[cmdseq.num].u.data = pilot, cmdseq.num++;
 #if defined DTV_STREAM_ID
-				p[cmdseq.num].cmd = DTV_STREAM_ID, p[cmdseq.num].u.data = parm.input_stream_id, cmdseq.num++;
+				p[cmdseq.num].cmd = DTV_STREAM_ID, p[cmdseq.num].u.data = parm.is_id, cmdseq.num++;
 #endif
 			}
 		}
@@ -2017,7 +2017,7 @@ RESULT eDVBFrontend::prepare_sat(const eDVBFrontendParametersSatellite &feparm, 
 	res = m_sec->prepare(*this, feparm, satfrequency, 1 << m_slotid, tunetimeout);
 	if (!res)
 	{
-		eDebugNoSimulate("[eDVBFrontend] prepare_sat System %d Freq %d Pol %d SR %d INV %d FEC %d orbpos %d system %d modulation %d pilot %d, rolloff %d input_stream_id %d",
+		eDebugNoSimulate("[eDVBFrontend] prepare_sat System %d Freq %d Pol %d SR %d INV %d FEC %d orbpos %d system %d modulation %d pilot %d, rolloff %d is_id %d",
 			feparm.system,
 			feparm.frequency,
 			feparm.polarisation,
@@ -2029,7 +2029,7 @@ RESULT eDVBFrontend::prepare_sat(const eDVBFrontendParametersSatellite &feparm, 
 			feparm.modulation,
 			feparm.pilot,
 			feparm.rolloff,
-			feparm.input_stream_id);
+			feparm.is_id);
 		if ((unsigned int)satfrequency < fe_info.frequency_min || (unsigned int)satfrequency > fe_info.frequency_max)
 		{
 			eDebugNoSimulate("[eDVBFrontend] %d mhz out of tuner range.. dont tune", satfrequency / 1000);

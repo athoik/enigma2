@@ -124,7 +124,7 @@ class Satfinder(ScanSetup, ServiceScan):
 					self.list.append(self.modulationEntry)
 					self.list.append(getConfigListEntry(_('Roll-off'), self.scan_sat.rolloff))
 					self.list.append(getConfigListEntry(_('Pilot'), self.scan_sat.pilot))
-					self.list.append(getConfigListEntry(_('Input Stream ID'), self.scan_sat.input_stream_id))
+					self.list.append(getConfigListEntry(_('Input Stream ID'), self.scan_sat.is_id))
 			elif self.tuning_type.value == "predefined_transponder":
 				self.updatePreDefTransponders()
 				self.list.append(getConfigListEntry(_("Transponder"), self.preDefTransponders))
@@ -208,7 +208,7 @@ class Satfinder(ScanSetup, ServiceScan):
 			self.scan_ter.modulation, self.scan_ter.transmission,
 			self.scan_ter.guard, self.scan_ter.hierarchy, self.scan_ter.plp_id,
 			self.scan_cab.frequency, self.scan_cab.inversion, self.scan_cab.symbolrate,
-			self.scan_cab.modulation, self.scan_cab.fec, self.scan_sat.input_stream_id):
+			self.scan_cab.modulation, self.scan_cab.fec, self.scan_sat.is_id):
 			x.addNotifier(self.retune, initial_call = False)
 
 		satfinder_nim_list = []
@@ -340,7 +340,7 @@ class Satfinder(ScanSetup, ServiceScan):
 				self.scan_sat.modulation.value,
 				self.scan_sat.rolloff.value,
 				self.scan_sat.pilot.value,
-				self.scan_sat.input_stream_id.value)
+				self.scan_sat.is_id.value)
 			if self.initcomplete:
 				self.tuner.tune(transponder)
 			self.transponder = transponder
