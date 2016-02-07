@@ -370,7 +370,8 @@ class Satfinder(ScanSetup, ServiceScan):
 				self.transponder[6], # system
 				self.transponder[7], # modulation
 				self.transponder[8], # rolloff
-				self.transponder[9]  # pilot
+				self.transponder[9], # pilot
+				self.transponder[10] # is_id
 			)
 		elif nimmanager.nim_slots[int(self.satfinder_scan_nims.value)].isCompatible("DVB-T"):
 			parm = buildTerTransponder(
