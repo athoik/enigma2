@@ -198,6 +198,11 @@ int eDVBTransponderData::getPlpId() const
 	return -1;
 }
 
+int eDVBTransponderData::getInputStreamId() const
+{
+	return -1;
+}
+
 DEFINE_REF(eDVBSatelliteTransponderData);
 
 eDVBSatelliteTransponderData::eDVBSatelliteTransponderData(struct dtv_property *dtvproperties, unsigned int propertycount, eDVBFrontendParametersSatellite &transponderparms, int frequencyoffset, bool original)
@@ -273,6 +278,8 @@ int eDVBSatelliteTransponderData::getModulation() const
 	default: eDebug("[eDVBSatelliteTransponderData] got unsupported modulation from frontend! report as QPSK!");
 	case QPSK: return eDVBFrontendParametersSatellite::Modulation_QPSK;
 	case PSK_8: return eDVBFrontendParametersSatellite::Modulation_8PSK;
+	case APSK_16: return eDVBFrontendParametersSatellite::Modulation_16APSK;
+	case APSK_32: return eDVBFrontendParametersSatellite::Modulation_32APSK;
 	}
 }
 
@@ -318,6 +325,15 @@ int eDVBSatelliteTransponderData::getSystem() const
 	case SYS_DVBS: return eDVBFrontendParametersSatellite::System_DVB_S;
 	case SYS_DVBS2: return eDVBFrontendParametersSatellite::System_DVB_S2;
 	}
+}
+
+int eDVBSatelliteTransponderData::getInputStreamId() const
+{
+#if defined DTV_STREAM_ID
+	return getProperty(DTV_STREAM_ID);
+#else
+	return -1;
+#endif
 }
 
 DEFINE_REF(eDVBCableTransponderData);

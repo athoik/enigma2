@@ -158,7 +158,8 @@ class PositionerSetup(Screen):
 			cur.get("system", eDVBFrontendParametersSatellite.System_DVB_S),
 			cur.get("modulation", eDVBFrontendParametersSatellite.Modulation_QPSK),
 			cur.get("rolloff", eDVBFrontendParametersSatellite.RollOff_alpha_0_35),
-			cur.get("pilot", eDVBFrontendParametersSatellite.Pilot_Unknown))
+			cur.get("pilot", eDVBFrontendParametersSatellite.Pilot_Unknown),
+			cur.get("input_stream_id", 0))
 
 		self.tuner.tune(tp)
 		self.isMoving = False
@@ -1386,7 +1387,9 @@ class TunerScreen(ConfigListScreen, Screen):
 			(eDVBFrontendParametersSatellite.FEC_9_10, "9/10")])
 		self.scan_sat.modulation = ConfigSelection(default = defaultSat["modulation"], choices = [
 			(eDVBFrontendParametersSatellite.Modulation_QPSK, "QPSK"),
-			(eDVBFrontendParametersSatellite.Modulation_8PSK, "8PSK")])
+			(eDVBFrontendParametersSatellite.Modulation_8PSK, "8PSK"),
+			(eDVBFrontendParametersSatellite.Modulation_16APSK, "16APSK"),
+			(eDVBFrontendParametersSatellite.Modulation_32APSK, "32APSK")])
 		self.scan_sat.rolloff = ConfigSelection(default = defaultSat.get("rolloff", eDVBFrontendParametersSatellite.RollOff_alpha_0_35), choices = [
 			(eDVBFrontendParametersSatellite.RollOff_alpha_0_35, "0.35"),
 			(eDVBFrontendParametersSatellite.RollOff_alpha_0_25, "0.25"),
@@ -1429,6 +1432,7 @@ class TunerScreen(ConfigListScreen, Screen):
 				self.list.append(self.modulationEntry)
 				self.list.append(getConfigListEntry(_('Roll-off'), self.scan_sat.rolloff))
 				self.list.append(getConfigListEntry(_('Pilot'), self.scan_sat.pilot))
+				self.list.append(getConfigListEntry(_('Input Stream ID'), self.scan_sat.input_stream_id))
 		else: # "predefined_transponder"
 			self.list.append(getConfigListEntry(_("Transponder"), self.tuning.transponder))
 			currtp = self.transponderToString([None, self.scan_sat.frequency.value, self.scan_sat.symbolrate.value, self.scan_sat.polarization.value])
@@ -1474,7 +1478,7 @@ class TunerScreen(ConfigListScreen, Screen):
 		ConfigListScreen.keyRight(self)
 
 	def keyGo(self):
-		returnvalue = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+		returnvalue = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 		satpos = int(self.tuning.sat.value)
 		if self.tuning.type.value == "manual_transponder":
 			if self.scan_sat.system.value == eDVBFrontendParametersSatellite.System_DVB_S2:
@@ -1491,11 +1495,12 @@ class TunerScreen(ConfigListScreen, Screen):
 				self.scan_sat.system.value,
 				self.scan_sat.modulation.value,
 				self.scan_sat.rolloff.value,
-				self.scan_sat.pilot.value)
+				self.scan_sat.pilot.value,
+				self.scan_sat.input_stream_id.value)
 		elif self.tuning.type.value == "predefined_transponder":
 			transponder = nimmanager.getTransponders(satpos)[self.tuning.transponder.index]
 			returnvalue = (transponder[1] / 1000, transponder[2] / 1000,
-				transponder[3], transponder[4], 2, satpos, transponder[5], transponder[6], transponder[8], transponder[9])
+				transponder[3], transponder[4], 2, satpos, transponder[5], transponder[6], transponder[8], transponder[9], transponder[10])
 		self.close(returnvalue)
 
 	def keyCancel(self):

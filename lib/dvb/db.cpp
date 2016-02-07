@@ -403,15 +403,20 @@ static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int vers
 				system=eDVBFrontendParametersSatellite::System_DVB_S,
 				modulation=eDVBFrontendParametersSatellite::Modulation_QPSK,
 				rolloff=eDVBFrontendParametersSatellite::RollOff_alpha_0_35,
-				pilot=eDVBFrontendParametersSatellite::Pilot_Unknown;
+				pilot=eDVBFrontendParametersSatellite::Pilot_Unknown,
+				input_stream_id=-1;
 			if (version == 3)
 				sscanf(line+2, "%d:%d:%d:%d:%d:%d:%d:%d:%d:%d",
 					&frequency, &symbol_rate, &polarisation, &fec, &orbital_position,
 					&inversion, &system, &modulation, &rolloff, &pilot);
-			else
+			else if (version == 4)
 				sscanf(line+2, "%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d",
 					&frequency, &symbol_rate, &polarisation, &fec, &orbital_position,
 					&inversion, &flags, &system, &modulation, &rolloff, &pilot);
+			else
+				sscanf(line+2, "%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d",
+					&frequency, &symbol_rate, &polarisation, &fec, &orbital_position,
+					&inversion, &flags, &system, &modulation, &rolloff, &pilot, &input_stream_id);
 			sat.frequency = frequency;
 			sat.symbol_rate = symbol_rate;
 			sat.polarisation = polarisation;
@@ -422,6 +427,7 @@ static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int vers
 			sat.modulation = modulation;
 			sat.rolloff = rolloff;
 			sat.pilot = pilot;
+			sat.input_stream_id = input_stream_id;
 			ePtr<eDVBFrontendParameters> feparm = new eDVBFrontendParameters;
 			feparm->setDVBS(sat);
 			feparm->setFlags(flags);
@@ -612,7 +618,7 @@ void eDVBDB::saveServicelist(const char *file)
 	int channels=0, services=0;
 	if (!f)
 		eFatal("[eDVBDB] couldn't save lame channel db!");
-	fprintf(f, "eDVB services /4/\n");
+	fprintf(f, "eDVB services /5/\n");
 	fprintf(f, "transponders\n");
 	for (std::map<eDVBChannelID, channel>::const_iterator i(m_channels.begin());
 			i != m_channels.end(); ++i)
@@ -631,7 +637,7 @@ void eDVBDB::saveServicelist(const char *file)
 		{
 			if (sat.system == eDVBFrontendParametersSatellite::System_DVB_S2)
 			{
-				fprintf(f, "\ts %d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d\n",
+				fprintf(f, "\ts %d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d\n",
 					sat.frequency, sat.symbol_rate,
 					sat.polarisation, sat.fec,
 					sat.orbital_position > 1800 ? sat.orbital_position - 3600 : sat.orbital_position,
@@ -640,7 +646,8 @@ void eDVBDB::saveServicelist(const char *file)
 					sat.system,
 					sat.modulation,
 					sat.rolloff,
-					sat.pilot);
+					sat.pilot,
+					sat.input_stream_id);
 			}
 			else
 			{
@@ -1077,7 +1084,8 @@ PyObject *eDVBDB::readSatellites(ePyObject sat_list, ePyObject sat_dict, ePyObje
 	}
 
 	int tmp, *dest = NULL,
-		modulation, system, freq, sr, pol, fec, inv, pilot, rolloff, tsid, onid;
+		modulation, system, freq, sr, pol, fec, inv, pilot, rolloff, tsid, onid,
+		input_stream_id;
 	char *end_ptr;
 
 	xmlNode *root_element = xmlDocGetRootElement(doc);
@@ -1143,6 +1151,7 @@ PyObject *eDVBDB::readSatellites(ePyObject sat_list, ePyObject sat_dict, ePyObje
 				rolloff = eDVBFrontendParametersSatellite::RollOff_alpha_0_35;
 				tsid = -1;
 				onid = -1;
+				input_stream_id = -1;
 
 				for(xmlAttrPtr attr = transponder->properties; attr; attr = attr->next)
 				{
@@ -1156,6 +1165,7 @@ PyObject *eDVBDB::readSatellites(ePyObject sat_list, ePyObject sat_dict, ePyObje
 					else if (name == "inversion") dest = &inv;
 					else if (name == "rolloff") dest = &rolloff;
 					else if (name == "pilot") dest = &pilot;
+					else if (name == "input_stream_id") dest = &input_stream_id;
 					else if (name == "tsid") dest = &tsid;
 					else if (name == "onid") dest = &onid;
 					else continue;
@@ -1172,7 +1182,7 @@ PyObject *eDVBDB::readSatellites(ePyObject sat_list, ePyObject sat_dict, ePyObje
 
 				if (freq && sr && pol != -1)
 				{
-					tuple = PyTuple_New(12);
+					tuple = PyTuple_New(13);
 					PyTuple_SET_ITEM(tuple, 0, PyInt_FromLong(0));
 					PyTuple_SET_ITEM(tuple, 1, PyInt_FromLong(freq));
 					PyTuple_SET_ITEM(tuple, 2, PyInt_FromLong(sr));
@@ -1183,8 +1193,9 @@ PyObject *eDVBDB::readSatellites(ePyObject sat_list, ePyObject sat_dict, ePyObje
 					PyTuple_SET_ITEM(tuple, 7, PyInt_FromLong(inv));
 					PyTuple_SET_ITEM(tuple, 8, PyInt_FromLong(rolloff));
 					PyTuple_SET_ITEM(tuple, 9, PyInt_FromLong(pilot));
-					PyTuple_SET_ITEM(tuple, 10, PyInt_FromLong(tsid));
-					PyTuple_SET_ITEM(tuple, 11, PyInt_FromLong(onid));
+					PyTuple_SET_ITEM(tuple, 10, PyInt_FromLong(input_stream_id));
+					PyTuple_SET_ITEM(tuple, 11, PyInt_FromLong(tsid));
+					PyTuple_SET_ITEM(tuple, 12, PyInt_FromLong(onid));
 					PyList_Append(tplist, tuple);
 					Py_DECREF(tuple);
 				}

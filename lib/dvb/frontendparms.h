@@ -35,7 +35,7 @@ struct eDVBFrontendParametersSatellite
 	};
 
 	enum {
-		Modulation_Auto, Modulation_QPSK, Modulation_8PSK, Modulation_QAM16
+		Modulation_Auto, Modulation_QPSK, Modulation_8PSK, Modulation_QAM16, Modulation_16APSK, Modulation_32APSK
 	};
 
 	// dvb-s2
@@ -49,7 +49,7 @@ struct eDVBFrontendParametersSatellite
 
 	bool no_rotor_command_on_tune;
 	unsigned int frequency, symbol_rate;
-	int polarisation, fec, inversion, orbital_position, system, modulation, rolloff, pilot;
+	int polarisation, fec, inversion, orbital_position, system, modulation, rolloff, pilot, input_stream_id;
 };
 SWIG_ALLOW_OUTPUT_SIMPLE(eDVBFrontendParametersSatellite);
 
@@ -208,6 +208,7 @@ public:
 	int getGuardInterval() const;
 	int getHierarchyInformation() const;
 	int getPlpId() const;
+	int getInputStreamId() const;
 };
 
 class eDVBSatelliteTransponderData : public eDVBTransponderData
@@ -231,6 +232,7 @@ public:
 	int getRolloff() const;
 	int getPilot() const;
 	int getSystem() const;
+	int getInputStreamId() const;
 };
 
 class eDVBCableTransponderData : public eDVBTransponderData

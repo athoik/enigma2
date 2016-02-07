@@ -162,7 +162,8 @@ class ServiceInfo(Screen):
 						 "constellation"	: _("Constellation"),
 						 "transmission_mode": _("Transmission mode"),
 						 "guard_interval" 	: _("Guard interval"),
-						 "hierarchy_information": _("Hierarchy information") }
+						 "hierarchy_information": _("Hierarchy information"),
+						 "input_stream_id" : _("Input Stream ID") }
 				Labels = [(conv[i], tp_info[i], i == "orbital_position" and TYPE_VALUE_ORBIT_DEC or TYPE_VALUE_DEC) for i in tp_info.keys() if i in conv]
 				self.fillList(Labels)
 
@@ -207,7 +208,8 @@ class ServiceInfo(Screen):
 						(_("Inversion"), frontendData["inversion"], TYPE_TEXT),
 						(_("FEC"), frontendData["fec_inner"], TYPE_TEXT),
 						(_("Pilot"), frontendData.get("pilot", None), TYPE_TEXT),
-						(_("Roll-off"), frontendData.get("rolloff", None), TYPE_TEXT))
+						(_("Roll-off"), frontendData.get("rolloff", None), TYPE_TEXT),
+						(_("Input Stream ID"), frontendData.get("input_stream_id", 0), TYPE_VALUE_DEC))
 			elif frontendDataOrg["tuner_type"] == "DVB-C":
 				return ((_("NIM"), chr(ord('A') + frontendData["tuner_number"]), TYPE_TEXT),
 						(_("Type"), frontendData["tuner_type"], TYPE_TEXT),
