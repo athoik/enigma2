@@ -76,6 +76,7 @@ private:
 	DECLARE_REF(eDVBFrontend);
 	bool m_simulate;
 	bool m_enabled;
+	bool m_multistream;
 	eDVBFrontend *m_simulate_fe; // only used to set frontend type in dvb.cpp
 	int m_dvbid;
 	int m_slotid;
@@ -160,6 +161,7 @@ public:
 	int closeFrontend(bool force=false, bool no_delayed=false);
 	const char *getDescription() const { return m_description; }
 	bool is_simulate() const { return m_simulate; }
+	bool is_multistream() const { return m_multistream; }
 };
 
 #endif // SWIG

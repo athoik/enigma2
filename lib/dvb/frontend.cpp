@@ -472,7 +472,7 @@ int eDVBFrontend::PriorityOrder=0;
 int eDVBFrontend::PreferredFrontendIndex = -1;
 
 eDVBFrontend::eDVBFrontend(const char *devicenodename, int fe, int &ok, bool simulate, eDVBFrontend *simulate_fe)
-	:m_simulate(simulate), m_enabled(false), m_simulate_fe(simulate_fe), m_dvbid(fe), m_slotid(fe)
+	:m_simulate(simulate), m_enabled(false), m_multistream(false), m_simulate_fe(simulate_fe), m_dvbid(fe), m_slotid(fe)
 	,m_fd(-1), m_dvbversion(0), m_rotor_mode(false), m_need_rotor_workaround(false)
 	,m_state(stateClosed), m_timeout(0), m_tuneTimer(0)
 {
@@ -548,6 +548,9 @@ int eDVBFrontend::openFrontend()
 				return -1;
 			}
 			strncpy(m_description, fe_info.name, sizeof(m_description));
+#if defined FE_CAN_MULTISTREAM
+			m_multistream = fe_info.caps & FE_CAN_MULTISTREAM;
+#endif
 #if defined DTV_ENUM_DELSYS
 			struct dtv_property p[1];
 			p[0].cmd = DTV_ENUM_DELSYS;
