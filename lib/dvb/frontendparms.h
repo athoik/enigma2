@@ -208,7 +208,7 @@ public:
 	int getGuardInterval() const;
 	int getHierarchyInformation() const;
 	int getPlpId() const;
-	int getInputStreamId() const;
+	int getIsId() const;
 };
 
 class eDVBSatelliteTransponderData : public eDVBTransponderData
@@ -232,7 +232,7 @@ public:
 	int getRolloff() const;
 	int getPilot() const;
 	int getSystem() const;
-	int getInputStreamId() const;
+	int getIsId() const;
 };
 
 class eDVBCableTransponderData : public eDVBTransponderData

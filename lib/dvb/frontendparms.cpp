@@ -198,7 +198,7 @@ int eDVBTransponderData::getPlpId() const
 	return -1;
 }
 
-int eDVBTransponderData::getInputStreamId() const
+int eDVBTransponderData::getIsId() const
 {
 	return -1;
 }
@@ -327,7 +327,7 @@ int eDVBSatelliteTransponderData::getSystem() const
 	}
 }
 
-int eDVBSatelliteTransponderData::getInputStreamId() const
+int eDVBSatelliteTransponderData::getIsId() const
 {
 #if defined DTV_STREAM_ID
 	return getProperty(DTV_STREAM_ID);
