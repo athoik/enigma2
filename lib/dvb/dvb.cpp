@@ -731,7 +731,7 @@ bool eDVBResourceManager::frontendIsMultistream(int index)
 		if (i->m_frontend->getSlotID() == index)
 		{
 			return i->m_frontend->is_multistream();
-		{
+		}
 	}
 	return false;
 }
