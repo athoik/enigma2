@@ -724,7 +724,7 @@ bool eDVBResourceManager::frontendIsCompatible(int index, const char *type)
 	return false;
 }
 
-void eDVBResourceManager::frontendIsMultistream(int index)
+bool eDVBResourceManager::frontendIsMultistream(int index)
 {
 	for (eSmartPtrList<eDVBRegisteredFrontend>::iterator i(m_frontend.begin()); i != m_frontend.end(); ++i)
 	{
