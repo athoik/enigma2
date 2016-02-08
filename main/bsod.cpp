@@ -62,11 +62,6 @@ static const std::string getLogBuffer()
 		return std::string(ringbuffer + begin, RINGBUFFER_SIZE - begin) + std::string(ringbuffer, ringbuffer_head);
 }
 
-static void addToLogbuffer(int level, const std::string &log)
-{
-	addToLogbuffer(log.c_str(), log.size());
-}
-
 static const std::string getConfigString(const std::string &key, const std::string &defaultValue)
 {
 	std::string value = eConfigManager::getConfigValue(key.c_str());
@@ -84,7 +79,7 @@ static const std::string getConfigString(const std::string &key, const std::stri
 			std::string line;
 			std::getline(in, line);
 			size_t size = key.size();
-			if (!key.compare(0, size, line) && line[size] == '=') {
+			if (!line.compare(0, size, key) && line[size] == '=') {
 				value = line.substr(size + 1);
 				break;
 			}
