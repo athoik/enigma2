@@ -158,6 +158,21 @@ int eDVBTransponderData::getSystem() const
 	return -1;
 }
 
+int eDVBTransponderData::getIsId() const
+{
+	return -1;
+}
+
+int eDVBTransponderData::getPLSMode() const
+{
+	return -1;
+}
+
+int eDVBTransponderData::getPLSCode() const
+{
+	return -1;
+}
+
 int eDVBTransponderData::getBandwidth() const
 {
 	return -1;
@@ -194,11 +209,6 @@ int eDVBTransponderData::getHierarchyInformation() const
 }
 
 int eDVBTransponderData::getPlpId() const
-{
-	return -1;
-}
-
-int eDVBTransponderData::getIsId() const
 {
 	return -1;
 }
@@ -330,7 +340,31 @@ int eDVBSatelliteTransponderData::getSystem() const
 int eDVBSatelliteTransponderData::getIsId() const
 {
 #if defined DTV_STREAM_ID
-	return getProperty(DTV_STREAM_ID);
+	if (originalValues) return transponderParameters.is_id;
+
+	return getProperty(DTV_STREAM_ID) & 0xFF;
+#else
+	return -1;
+#endif
+}
+
+int eDVBSatelliteTransponderData::getPLSMode() const
+{
+#if defined DTV_STREAM_ID
+	if (originalValues) return transponderParameters.pls_mode;
+
+	return (getProperty(DTV_STREAM_ID) >> 26) & 0x3;
+#else
+	return -1;
+#endif
+}
+
+int eDVBSatelliteTransponderData::getPLSCode() const
+{
+#if defined DTV_STREAM_ID
+	if (originalValues) return transponderParameters.pls_code;
+
+	return (getProperty(DTV_STREAM_ID) >> 8) & 0x3FFFF;
 #else
 	return -1;
 #endif
