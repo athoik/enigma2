@@ -1,3 +1,5 @@
+import os
+
 from Tools.HardwareInfo import HardwareInfo
 from Tools.BoundFunction import boundFunction
 
@@ -624,6 +626,15 @@ class NIM(object):
 	def getMultiTypeList(self):
 		return self.multi_type
 
+	def isFBCTuner(self):
+		return (self.frontend_id is not None) and os.access("/proc/stb/frontend/%d/fbc_id" % self.frontend_id, os.F_OK)
+
+	def isFBCRoot(self):
+		return self.isFBCTuner() and (self.slot % 8 < 2)
+
+	def isFBCLink(self):
+		return self.isFBCTuner() and not (self.slot % 8 < 2)
+
 	slot_id = property(getSlotID)
 
 	def getFriendlyType(self):
@@ -789,8 +800,6 @@ class NimManager:
 				entries[current_slot]["isempty"] = True
 		nimfile.close()
 
-		from os import path
-
 		for id, entry in entries.items():
 			if not (entry.has_key("name") and entry.has_key("type")):
 				entry["name"] =  _("N/A")
@@ -800,7 +809,7 @@ class NimManager:
 			if not (entry.has_key("has_outputs")):
 				entry["has_outputs"] = True
 			if entry.has_key("frontend_device"): # check if internally connectable
-				if path.exists("/proc/stb/frontend/%d/rf_switch" % entry["frontend_device"]):
+				if os.path.exists("/proc/stb/frontend/%d/rf_switch" % entry["frontend_device"]):
 					entry["internally_connectable"] = entry["frontend_device"] - 1
 				else:
 					entry["internally_connectable"] = None
@@ -852,10 +861,11 @@ class NimManager:
 		InitNimManager(self)	#init config stuff
 
 	# get a list with the friendly full description
-	def nimList(self):
+	def nimList(self, showFBCTuners=True):
 		list = [ ]
 		for slot in self.nim_slots:
-			list.append(slot.friendly_full_description)
+			if showFBCTuners or not slot.isFBCLink():
+				list.append(slot.friendly_full_description)
 		return list
 
 	def getSlotCount(self):
@@ -1138,7 +1148,7 @@ def InitSecParams():
 # the C(++) part should can handle this
 # the configElement should be only visible when diseqc 1.2 is disabled
 
-def InitNimManager(nimmgr):
+def InitNimManager(nimmgr, update_slots = []):
 	hw = HardwareInfo()
 	addNimConfig = False
 	try:
@@ -1559,7 +1569,7 @@ def InitNimManager(nimmgr):
 			if len(nimmgr.canConnectTo(x)) > 0:
 				config_mode_choices.append(("loopthrough", _("loopthrough to")))
 			nim.advanced = ConfigNothing()
-			tmp = ConfigSelection(config_mode_choices, "simple")
+			tmp = ConfigSelection(config_mode_choices, slot.isFBCLink() and "nothing" or "simple")
 			tmp.slot_id = x
 			tmp.addNotifier(configModeChanged, initial_call = False)
 			nim.configMode = tmp
@@ -1639,6 +1649,9 @@ def InitNimManager(nimmgr):
 		x = slot.slot
 		nim = config.Nims[x]
 		empty = True
+
+		if update_slots and (x not in update_slots):
+			continue
 
 		if slot.canBeCompatible("DVB-S"):
 			createSatConfig(nim, x, empty_slots)
