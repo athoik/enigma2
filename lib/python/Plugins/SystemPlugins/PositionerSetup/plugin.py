@@ -1445,9 +1445,10 @@ class TunerScreen(ConfigListScreen, Screen):
 				self.list.append(self.modulationEntry)
 				self.list.append(getConfigListEntry(_('Roll-off'), self.scan_sat.rolloff))
 				self.list.append(getConfigListEntry(_('Pilot'), self.scan_sat.pilot))
-				self.list.append(getConfigListEntry(_('Input Stream ID'), self.scan_sat.is_id))
-				self.list.append(getConfigListEntry(_('PLS Mode'), self.scan_sat.pls_mode))
-				self.list.append(getConfigListEntry(_('PLS Code'), self.scan_sat.pls_code))
+				if nim.isMultistream():
+					self.list.append(getConfigListEntry(_('Input Stream ID'), self.scan_sat.is_id))
+					self.list.append(getConfigListEntry(_('PLS Mode'), self.scan_sat.pls_mode))
+					self.list.append(getConfigListEntry(_('PLS Code'), self.scan_sat.pls_code))
 		else: # "predefined_transponder"
 			self.list.append(getConfigListEntry(_("Transponder"), self.tuning.transponder))
 			currtp = self.transponderToString([None, self.scan_sat.frequency.value, self.scan_sat.symbolrate.value, self.scan_sat.polarization.value])
