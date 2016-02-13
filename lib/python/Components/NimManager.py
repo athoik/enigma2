@@ -620,7 +620,13 @@ class NIM(object):
 		return (self.frontend_id is not None) or self.__is_empty
 
 	def isMultistream(self):
-		return self.frontend_id and eDVBResourceManager.getInstance().frontendIsMultistream(self.frontend_id) or False
+		multistream = self.frontend_id and eDVBResourceManager.getInstance().frontendIsMultistream(self.frontend_id) or False
+		# HACK due to poor support for VTUNER_SET_FE_INFO
+		# Actually when vtuner is doesn't accept fe_info we have to fallback to tuner detection for name
+		# More tuner names will be added when confirmed as multistream (FE_CAN_MULTISTREAM)
+		if not multistream and "TBS" in self.description:
+			multistream = True
+		return multistream
 
 	# returns dict {<slotid>: <type>}
 	def getMultiTypeList(self):
