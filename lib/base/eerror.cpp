@@ -76,11 +76,61 @@ void DumpUnfreed()
 };
 #endif
 
-Signal2<void, const char *, unsigned int> logOutput;
 int logOutputConsole = 1;
 int debugLvl = lvlDebug;
 
 static pthread_mutex_t DebugLock = PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP;
+#define RINGBUFFER_SIZE 16384
+static char ringbuffer[RINGBUFFER_SIZE];
+static unsigned int ringbuffer_head;
+static void logOutput(const char *data, unsigned int len)
+{
+	singleLock s(DebugLock);
+	while (len)
+	{
+		unsigned int remaining = RINGBUFFER_SIZE - ringbuffer_head;
+
+		if (remaining > len)
+			remaining = len;
+
+		memcpy(ringbuffer + ringbuffer_head, data, remaining);
+		len -= remaining;
+		data += remaining;
+		ringbuffer_head += remaining;
+		ASSERT(ringbuffer_head <= RINGBUFFER_SIZE);
+		if (ringbuffer_head == RINGBUFFER_SIZE)
+			ringbuffer_head = 0;
+	}
+}
+
+void retrieveLogBuffer(const char **p1, unsigned int *s1, const char **p2, unsigned int *s2)
+{
+	unsigned int begin = ringbuffer_head;
+	while (ringbuffer[begin] == 0)
+	{
+		++begin;
+		if (begin == RINGBUFFER_SIZE)
+			begin = 0;
+		if (begin == ringbuffer_head)
+			return;
+	}
+
+	if (begin < ringbuffer_head)
+	{
+		*p1 = ringbuffer + begin;
+		*s1 = ringbuffer_head - begin;
+		*p2 = NULL;
+		*s2 = NULL;
+	}
+	else
+	{
+		*p1 = ringbuffer + begin;
+		*s1 = RINGBUFFER_SIZE - begin;
+		*p2 = ringbuffer;
+		*s2 = ringbuffer_head;
+	}
+}
+
 
 extern void bsodFatal(const char *component);
 
@@ -92,7 +142,7 @@ void eDebugImpl(int flags, const char* fmt, ...)
 	if (! (flags & _DBGFLG_NOTIME)) {
 		struct timespec tp;
 		clock_gettime(CLOCK_MONOTONIC, &tp);
-		pos = snprintf(buf, sizeof(buf), "<%6lu.%06lu> ", tp.tv_sec, tp.tv_nsec/1000);
+		pos = snprintf(buf, sizeof(buf), "<%6lu.%03lu> ", tp.tv_sec, tp.tv_nsec/1000000);
 	}
 
 	va_list ap;
@@ -107,10 +157,7 @@ void eDebugImpl(int flags, const char* fmt, ...)
 		buf[pos++] = '\n';
 	}
 
-	{
-		singleLock s(DebugLock);
-		logOutput(buf, pos);
-	}
+	logOutput(buf, pos);
 
 	if (logOutputConsole)
 		::write(2, buf, pos);
@@ -122,9 +169,8 @@ void eDebugImpl(int flags, const char* fmt, ...)
 void ePythonOutput(const char *string)
 {
 #ifdef DEBUG
-	int lvl = lvlWarning; // FIXME: get level info from python
-	// Only show message when the debug level is low enough
-	if (lvl <= debugLvl)
-		eDebugImpl(_DBGFLG_NONEWLINE, string);
+	// Only show message when the debug level is at least "warning"
+	if (debugLvl >= lvlWarning)
+		eDebugImpl(_DBGFLG_NONEWLINE, "%s", string);
 #endif
 }
