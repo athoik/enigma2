@@ -242,6 +242,7 @@ public:
 	PyObject *setFrontendSlotInformations(SWIG_PYOBJECT(ePyObject) list);
 	bool frontendIsCompatible(int index, const char *type);
 	bool frontendIsMultistream(int index);
+	std::string getFrontendCapabilities(int index);
 	void setFrontendType(int index, const char *type);
 };
 SWIG_TEMPLATE_TYPEDEF(ePtr<eDVBResourceManager>, eDVBResourceManager);

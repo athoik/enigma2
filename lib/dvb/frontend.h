@@ -166,6 +166,7 @@ public:
 	bool getEnabled() { return m_enabled; }
 	void setEnabled(bool enable) { m_enabled = enable; }
 	bool is_multistream() const { return m_multistream; }
+	std::string getCapabilities();
 };
 
 #endif // SWIG
