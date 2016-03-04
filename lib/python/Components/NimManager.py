@@ -622,7 +622,7 @@ class NIM(object):
 	def isMultistream(self):
 		multistream = self.frontend_id and eDVBResourceManager.getInstance().frontendIsMultistream(self.frontend_id) or False
 		# HACK due to poor support for VTUNER_SET_FE_INFO
-		# Actually when vtuner is doesn't accept fe_info we have to fallback to tuner detection for name
+		# When vtuner does not accept fe_info we have to fallback to detection using tuner name
 		# More tuner names will be added when confirmed as multistream (FE_CAN_MULTISTREAM)
 		if not multistream and "TBS" in self.description:
 			multistream = True
