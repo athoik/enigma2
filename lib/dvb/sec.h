@@ -262,11 +262,12 @@ public:
 #define guard_offset_min -8000
 #define guard_offset_max 8000
 #define guard_offset_step 8000
-#define MAX_SATCR 8
-#define MAX_LNBNUM 32
+#define MAX_SATCR 32
+#define MAX_LNBNUM 64
 
 	int SatCR_positions;
 	int SatCR_idx;
+	int SatCR_format;
 	unsigned int SatCRvco;
 	unsigned int UnicableTuningWord;
 	unsigned int UnicableConfigWord;
@@ -326,7 +327,7 @@ public:
 #ifndef SWIG
 	eDVBSatelliteEquipmentControl(eSmartPtrList<eDVBRegisteredFrontend> &avail_frontends, eSmartPtrList<eDVBRegisteredFrontend> &avail_simulate_frontends);
 	RESULT prepare(iDVBFrontend &frontend, const eDVBFrontendParametersSatellite &sat, int &frequency, int frontend_id, unsigned int tunetimeout);
-	void prepareTurnOffSatCR(iDVBFrontend &frontend, int satcr); // used for unicable
+	void prepareTurnOffSatCR(iDVBFrontend &frontend); // used for unicable
 	int canTune(const eDVBFrontendParametersSatellite &feparm, iDVBFrontend *, int frontend_id, int *highest_score_lnb=0);
 	bool currentLNBValid() { return m_lnbidx > -1 && m_lnbidx < (int)(sizeof(m_lnbs) / sizeof(eDVBSatelliteLNBParameters)); }
 #endif
@@ -360,9 +361,11 @@ public:
 	RESULT setInputpowerDelta(int delta);  // delta between running and stopped rotor
 	RESULT setRotorTurningSpeed(int speed);  // set turning speed..
 /* Unicable Specific Parameters */
+	RESULT setLNBSatCRformat(int SatCR_format);	//DiSEqc or JESS (or ...)
 	RESULT setLNBSatCR(int SatCR_idx);
 	RESULT setLNBSatCRvco(int SatCRvco);
 	RESULT setLNBSatCRpositions(int SatCR_positions);
+	RESULT getLNBSatCRformat();	//DiSEqc or JESS (or ...)
 	RESULT getLNBSatCR();
 	RESULT getLNBSatCRvco();
 	RESULT getLNBSatCRpositions();

@@ -344,24 +344,47 @@ class SecConfigure:
 						manufacturer_name = configManufacturer.value
 						manufacturer = ProductDict[manufacturer_name]
 						product_name = manufacturer.product.value
-						sec.setLNBSatCR(manufacturer.scr[product_name].index)
-						sec.setLNBSatCRvco(manufacturer.vco[product_name][manufacturer.scr[product_name].index].value*1000)
-						sec.setLNBSatCRpositions(manufacturer.positions[product_name][0].value)
-						sec.setLNBLOFL(manufacturer.lofl[product_name][0].value * 1000)
-						sec.setLNBLOFH(manufacturer.lofh[product_name][0].value * 1000)
-						sec.setLNBThreshold(manufacturer.loft[product_name][0].value * 1000)
-						configManufacturer.save_forced = True
-						manufacturer.product.save_forced = True
-						manufacturer.vco[product_name][manufacturer.scr[product_name].index].save_forced = True
+						manufacturer_scr = manufacturer.scr
+						manufacturer_positions_value = manufacturer.positions[product_name][0].value
+						position_idx = (x-1) % manufacturer_positions_value
+						if product_name in manufacturer_scr:
+							diction = manufacturer.diction[product_name].value
+							if x <= manufacturer_positions_value or diction != "EN50607": #for every allowed position
+								sec.setLNBSatCR(manufacturer_scr[product_name].index)
+
+								if diction == "EN50607":
+									sec.setLNBSatCRformat(1)	#JESS
+								else:
+									sec.setLNBSatCRformat(0)	#DiSEqC
+
+								sec.setLNBSatCRvco(manufacturer.vco[product_name][manufacturer_scr[product_name].index].value*1000)
+								sec.setLNBSatCRpositions(manufacturer_positions_value)
+								sec.setLNBLOFL(manufacturer.lofl[product_name][position_idx].value * 1000)
+								sec.setLNBLOFH(manufacturer.lofh[product_name][position_idx].value * 1000)
+								sec.setLNBThreshold(manufacturer.loft[product_name][position_idx].value * 1000)
+								configManufacturer.save_forced = True
+								manufacturer.product.save_forced = True
+								manufacturer.vco[product_name][manufacturer_scr[product_name].index].save_forced = True
+							else: #positionnumber out of range
+								print "[InitNimManager] position number out of range"
+						else:
+							print "[InitNimManager] no product in list"
 
 					if currLnb.unicable.value == "unicable_user":
 #TODO satpositions for satcruser
+						if currLnb.dictionuser.value == "EN50607":
+							sec.setLNBSatCRformat(1)
+							sec.setLNBSatCR(currLnb.satcruserEN50607.index)
+							sec.setLNBSatCRvco(currLnb.satcrvcouserEN50607[currLnb.satcruserEN50607.index].value*1000)
+						else:
+							sec.setLNBSatCRformat(0)
+							sec.setLNBSatCR(currLnb.satcruserEN50494.index)
+							sec.setLNBSatCRvco(currLnb.satcrvcouserEN50494[currLnb.satcruserEN50494.index].value*1000)
+
 						sec.setLNBLOFL(currLnb.lofl.value * 1000)
 						sec.setLNBLOFH(currLnb.lofh.value * 1000)
 						sec.setLNBThreshold(currLnb.threshold.value * 1000)
-						sec.setLNBSatCR(currLnb.satcruser.index)
-						sec.setLNBSatCRvco(currLnb.satcrvcouser[currLnb.satcruser.index].value*1000)
-						sec.setLNBSatCRpositions(1)	#HACK
+						sec.setLNBSatCRpositions(64)	#HACK
 					elif currLnb.unicable.value == "unicable_matrix":
 						setupUnicable(currLnb.unicableMatrixManufacturer, currLnb.unicableMatrix)
 					elif currLnb.unicable.value == "unicable_lnb":
@@ -1183,11 +1206,12 @@ def InitNimManager(nimmgr, update_slots = []):
 	root = doc.getroot()
 
 	entry = root.find("lnb")
+	lscr = tuple(["scr%d" % i for i in range(1,33)])
 	for manufacturer in entry.getchildren():
 		m={}
 		for product in manufacturer.getchildren():
+			p={}	#new dict empty for new product
 			scr=[]
-			lscr=("scr1","scr2","scr3","scr4","scr5","scr6","scr7","scr8")
 			for i in range(len(lscr)):
 				scr.append(product.get(lscr[i],"0"))
 			for i in range(len(lscr)):
@@ -1195,21 +1219,36 @@ def InitNimManager(nimmgr, update_slots = []):
 					scr.pop()
 				else:
 					break;
-			lof=[]
-			lof.append(int(product.get("positions",1)))
-			lof.append(int(product.get("lofl",9750)))
-			lof.append(int(product.get("lofh",10600)))
-			lof.append(int(product.get("threshold",11700)))
-			scr.append(tuple(lof))
-			m.update({product.get("name"):tuple(scr)})
+
+			p.update({"frequencies":tuple(scr)})				#add scr frequencies to dict product
+
+			diction = product.get("format", "EN50494").upper()
+			if diction in ("JESS", "UNICABLE2", "SCD2", "EN50607"):
+				diction = "EN50607"
+			else:
+				diction = "EN50494"
+			p.update({"diction":tuple([diction])})				#add diction to dict product
+
+			positions=[]
+			positions.append(int(product.get("positions",1)))
+			for cnt in range(positions[0]):
+				lof=[]
+				lof.append(int(product.get("lofl",9750)))
+				lof.append(int(product.get("lofh",10600)))
+				lof.append(int(product.get("threshold",11700)))
+				positions.append(tuple(lof))
+
+			p.update({"positions":tuple(positions)})			#add positons to dict product.
+
+			m.update({product.get("name"):p})				#add dict product to dict manufacturer
 		unicablelnbproducts.update({manufacturer.get("name"):m})
 
 	entry = root.find("matrix")
 	for manufacturer in entry.getchildren():
 		m={}
 		for product in manufacturer.getchildren():
+			p={}	#new dict empty for new product
 			scr=[]
-			lscr=("scr1","scr2","scr3","scr4","scr5","scr6","scr7","scr8")
 			for i in range(len(lscr)):
 				scr.append(product.get(lscr[i],"0"))
 			for i in range(len(lscr)):
@@ -1217,14 +1256,29 @@ def InitNimManager(nimmgr, update_slots = []):
 					scr.pop()
 				else:
 					break;
-			lof=[]
-			lof.append(int(product.get("positions",1)))
-			lof.append(int(product.get("lofl",9750)))
-			lof.append(int(product.get("lofh",10600)))
-			lof.append(int(product.get("threshold",11700)))
-			scr.append(tuple(lof))
-			m.update({product.get("name"):tuple(scr)})
-		unicablematrixproducts.update({manufacturer.get("name"):m})
+
+			p.update({"frequencies":tuple(scr)})				#add scr frequencies to dict product
+
+			diction = product.get("format", "EN50494").upper()
+			if diction in ("JESS", "UNICABLE2", "SCD2", "EN50607"):
+				diction = "EN50607"
+			else:
+				diction = "EN50494"
+			p.update({"diction":tuple([diction])})				#add diction to dict product
+
+			positions=[]
+			positions.append(int(product.get("positions",1)))
+			for cnt in range(positions[0]):
+				lof=[]
+				lof.append(int(product.get("lofl", 9750)))
+				lof.append(int(product.get("lofh", 10600)))
+				lof.append(int(product.get("threshold", 11700)))
+				positions.append(tuple(lof))
+
+			p.update({"positions":tuple(positions)})			#add positons to dict product
+
+			m.update({product.get("name"):p})				#add dict product to dict manufacturer
+		unicablematrixproducts.update({manufacturer.get("name"):m})		#add dict manufacturer to dict unicablematrixproducts
 
 	UnicableLnbManufacturers = unicablelnbproducts.keys()
 	UnicableLnbManufacturers.sort()
@@ -1237,9 +1291,9 @@ def InitNimManager(nimmgr, update_slots = []):
 		"unicable_user": "Unicable "+_("User defined")}
 	unicable_choices_default = "unicable_lnb"
 
-	advanced_lnb_satcruser_choices = [ ("1", "SatCR 1"), ("2", "SatCR 2"), ("3", "SatCR 3"), ("4", "SatCR 4"),
-					("5", "SatCR 5"), ("6", "SatCR 6"), ("7", "SatCR 7"), ("8", "SatCR 8")]
-
+	advanced_lnb_satcr_user_choicesEN50494 = [("%d" % i, "SatCR %d" % i) for i in range(1, 9)]
+	advanced_lnb_satcr_user_choicesEN50607 = [("%d" % i, "SatCR %d" % i) for i in range(1, 33)]
+	advanced_lnb_diction_user_choices = [("EN50494", "Unicable(EN50494)"), ("EN50607", "JESS(EN50607)")]
 	prio_list = [ ("-1", _("Auto")) ]
 	for prio in range(65)+range(14000,14065)+range(19000,19065):
 		description = ""
@@ -1298,80 +1352,91 @@ def InitNimManager(nimmgr, update_slots = []):
 			if isinstance(section.unicable, ConfigNothing):
 				if lnb == 1:
 					section.unicable = ConfigSelection(unicable_choices, unicable_choices_default)
-				elif lnb == 2:
-					section.unicable = ConfigSelection(choices = {"unicable_matrix": _("Unicable Martix"),"unicable_user": "Unicable "+_("User defined")}, default = "unicable_matrix")
 				else:
-					section.unicable = ConfigSelection(choices = {"unicable_user": _("User defined")}, default = "unicable_user")
+					section.unicable = ConfigSelection(choices = {"unicable_matrix": _("Unicable Martix"), "unicable_user": "Unicable "+_("User defined")}, default = "unicable_matrix")
 
-				def fillUnicableConf(sectionDict, unicableproducts, vco_null_check):
-					for y in unicableproducts:
-						products = unicableproducts[y].keys()
-						products.sort()
-						tmp = ConfigSubsection()
-						tmp.product = ConfigSelection(choices = products, default = products[0])
-						tmp.scr = ConfigSubDict()
-						tmp.vco = ConfigSubDict()
-						tmp.lofl = ConfigSubDict()
-						tmp.lofh = ConfigSubDict()
-						tmp.loft = ConfigSubDict()
-						tmp.positions = ConfigSubDict()
-						for z in products:
+			def fillUnicableConf(sectionDict, unicableproducts, vco_null_check):
+				for manufacturer in unicableproducts:
+					products = unicableproducts[manufacturer].keys()
+					products.sort()
+					products_valide = []
+					tmp = ConfigSubsection()
+					tmp.scr = ConfigSubDict()
+					tmp.vco = ConfigSubDict()
+					tmp.lofl = ConfigSubDict()
+					tmp.lofh = ConfigSubDict()
+					tmp.loft = ConfigSubDict()
+					tmp.positions = ConfigSubDict()
+					tmp.diction = ConfigSubDict()
+					for article in products:
+						positionslist = unicableproducts[manufacturer][article].get("positions")
+						positions = int(positionslist[0])
+						dictionlist = [unicableproducts[manufacturer][article].get("diction")]
+						if lnb <= positions or dictionlist[0][0] != "EN50607":
+							tmp.positions[article] = ConfigSubList()
+							tmp.positions[article].append(ConfigInteger(default=positions, limits = (positions, positions)))
+							tmp.diction[article] = ConfigSelection(choices = dictionlist, default = dictionlist[0][0])
+
 							scrlist = []
-							vcolist = unicableproducts[y][z]
-							tmp.vco[z] = ConfigSubList()
-							for cnt in range(1,1+len(vcolist)-1):
+							vcolist = unicableproducts[manufacturer][article].get("frequencies")
+							tmp.vco[article] = ConfigSubList()
+							for cnt in range(1,len(vcolist)+1):
 								vcofreq = int(vcolist[cnt-1])
 								if vcofreq == 0 and vco_null_check:
-									scrlist.append(("%d" %cnt,"SCR %d " %cnt +_("not used")))
+									scrlist.append(("%d" % cnt, "SCR %d " % cnt + _("not used")))
 								else:
-									scrlist.append(("%d" %cnt,"SCR %d" %cnt))
-								tmp.vco[z].append(ConfigInteger(default=vcofreq, limits = (vcofreq, vcofreq)))
-								tmp.scr[z] = ConfigSelection(choices = scrlist, default = scrlist[0][0])
+									scrlist.append(("%d" % cnt, "SCR %d" % cnt))
+								tmp.vco[article].append(ConfigInteger(default=vcofreq, limits = (vcofreq, vcofreq)))
 
-								positions = int(vcolist[len(vcolist)-1][0])
-								tmp.positions[z] = ConfigSubList()
-								tmp.positions[z].append(ConfigInteger(default=positions, limits = (positions, positions)))
+							tmp.scr[article] = ConfigSelection(choices = scrlist, default = scrlist[0][0])
+							tmp.lofl[article] = ConfigSubList()
+							tmp.lofh[article] = ConfigSubList()
+							tmp.loft[article] = ConfigSubList()
 
-								lofl = vcolist[len(vcolist)-1][1]
-								tmp.lofl[z] = ConfigSubList()
-								tmp.lofl[z].append(ConfigInteger(default=lofl, limits = (lofl, lofl)))
+							for cnt in range(1,positions+1):
+								lofl = int(positionslist[cnt][0])
+								lofh = int(positionslist[cnt][1])
+								loft = int(positionslist[cnt][2])
+								tmp.lofl[article].append(ConfigInteger(default=lofl, limits = (lofl, lofl)))
+								tmp.lofh[article].append(ConfigInteger(default=lofh, limits = (lofh, lofh)))
+								tmp.loft[article].append(ConfigInteger(default=loft, limits = (loft, loft)))
+							products_valide.append(article)
 
-								lofh = int(vcolist[len(vcolist)-1][2])
-								tmp.lofh[z] = ConfigSubList()
-								tmp.lofh[z].append(ConfigInteger(default=lofh, limits = (lofh, lofh)))
+					if len(products_valide)==0:
+						products_valide.append("None")
+					tmp.product = ConfigSelection(choices = products_valide, default = products_valide[0])
+					sectionDict[manufacturer] = tmp
 
-								loft = int(vcolist[len(vcolist)-1][3])
-								tmp.loft[z] = ConfigSubList()
-								tmp.loft[z].append(ConfigInteger(default=loft, limits = (loft, loft)))
-						sectionDict[y] = tmp
+			if lnb < 65:
+				print "[InitNimManager] MATRIX"
+				section.unicableMatrix = ConfigSubDict()
+				section.unicableMatrixManufacturer = ConfigSelection(UnicableMatrixManufacturers, UnicableMatrixManufacturers[0])
+				fillUnicableConf(section.unicableMatrix, unicablematrixproducts, True)
 
-				if lnb < 3:
-					print "[InitNimManager] MATRIX"
-					section.unicableMatrix = ConfigSubDict()
-					section.unicableMatrixManufacturer = ConfigSelection(UnicableMatrixManufacturers, UnicableMatrixManufacturers[0])
-					fillUnicableConf(section.unicableMatrix, unicablematrixproducts, True)
-
-				if lnb < 2:
-					print "[InitNimManager] LNB"
-					section.unicableLnb = ConfigSubDict()
-					section.unicableLnbManufacturer = ConfigSelection(UnicableLnbManufacturers, UnicableLnbManufacturers[0])
-					fillUnicableConf(section.unicableLnb, unicablelnbproducts, False)
+			if lnb < 2: #Konfiguration nur fuer LNB1 zulassen
+				print "[InitNimManager] LNB"
+				section.unicableLnb = ConfigSubDict()
+				section.unicableLnbManufacturer = ConfigSelection(UnicableLnbManufacturers, UnicableLnbManufacturers[0])
+				fillUnicableConf(section.unicableLnb, unicablelnbproducts, False)
 
 #TODO satpositions for satcruser
 				section.satcruser = ConfigSelection(advanced_lnb_satcruser_choices, default="1")
-				tmp = ConfigSubList()
-				tmp.append(ConfigInteger(default=1284, limits = (950, 2150)))
-				tmp.append(ConfigInteger(default=1400, limits = (950, 2150)))
-				tmp.append(ConfigInteger(default=1516, limits = (950, 2150)))
-				tmp.append(ConfigInteger(default=1632, limits = (950, 2150)))
-				tmp.append(ConfigInteger(default=1748, limits = (950, 2150)))
-				tmp.append(ConfigInteger(default=1864, limits = (950, 2150)))
-				tmp.append(ConfigInteger(default=1980, limits = (950, 2150)))
-				tmp.append(ConfigInteger(default=2096, limits = (950, 2150)))
-				section.satcrvcouser = tmp
 
-				nim.advanced.unicableconnected = ConfigYesNo(default=False)
-				nim.advanced.unicableconnectedTo = ConfigSelection([(str(id), nimmgr.getNimDescription(id)) for id in nimmgr.getNimListOfType("DVB-S") if id != x])
+			section.dictionuser = ConfigSelection(advanced_lnb_diction_user_choices, default="EN50494")
+			section.satcruserEN50494 = ConfigSelection(advanced_lnb_satcr_user_choicesEN50494, default="1")
+			section.satcruserEN50607 = ConfigSelection(advanced_lnb_satcr_user_choicesEN50607, default="1")
+
+			tmp = ConfigSubList()
+			for i in (1284, 1400, 1516, 1632, 1748, 1864, 1980, 2096):
+				tmp.append(ConfigInteger(default=i, limits = (950, 2150)))
+			section.satcrvcouserEN50494 = tmp
+
+			for i in (1284, 1400, 1516, 1632, 1748, 1864, 1980, 2096) * 3:
+				tmp.append(ConfigInteger(default=i, limits = (950, 2150)))
+			section.satcrvcouserEN50607 = tmp
+
+			nim.advanced.unicableconnected = ConfigYesNo(default=False)
+			nim.advanced.unicableconnectedTo = ConfigSelection([(str(id), nimmgr.getNimDescription(id)) for id in nimmgr.getNimListOfType("DVB-S") if id != x])
 
 	def configDiSEqCModeChanged(configElement):
 		section = configElement.section
