@@ -107,8 +107,8 @@ void eDVBFrontendParametersSatellite::set(const SatelliteDeliverySystemDescripto
 		modulation = Modulation_QPSK;
 	}
 	rolloff = descriptor.getRollOff();
-	is_id = -1; /* NO_STREAM_ID_FILTER */
-	pls_mode = 0;
+	is_id = NO_STREAM_ID_FILTER;
+	pls_mode = eDVBFrontendParametersSatellite::PLS_Root;
 	pls_code = 1;
 	if (system == System_DVB_S2)
 	{
