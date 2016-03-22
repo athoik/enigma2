@@ -1305,7 +1305,11 @@ class InfoBarSeek:
 
 	def showAfterSeek(self):
 		if isinstance(self, InfoBarShowHide):
-			self.doShow()
+			if isStandardInfoBar(self) and self.timeshiftEnabled():
+				for c in self.onPlayStateChanged:
+					c(self.seekstate)
+			else:
+				self.doShow()
 
 	def up(self):
 		pass
@@ -2688,7 +2692,7 @@ class InfoBarSubserviceSelection:
 				self.playSubservice(service[1])
 
 	def addSubserviceToBouquetCallback(self, service):
-		if len(service) > 1 and isinstance(service[1], eServiceReference):
+		if service and len(service) > 1 and isinstance(service[1], eServiceReference):
 			self.selectedSubservice = service
 			if self.bouquets is None:
 				cnt = 0
