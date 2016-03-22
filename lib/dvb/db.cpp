@@ -412,10 +412,6 @@ static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int vers
 				sscanf(line+2, "%d:%d:%d:%d:%d:%d:%d:%d:%d:%d",
 					&frequency, &symbol_rate, &polarisation, &fec, &orbital_position,
 					&inversion, &system, &modulation, &rolloff, &pilot);
-			else if (version == 4)
-				sscanf(line+2, "%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d",
-					&frequency, &symbol_rate, &polarisation, &fec, &orbital_position,
-					&inversion, &flags, &system, &modulation, &rolloff, &pilot);
 			else
 				sscanf(line+2, "%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d",
 					&frequency, &symbol_rate, &polarisation, &fec, &orbital_position,
@@ -625,7 +621,7 @@ void eDVBDB::saveServicelist(const char *file)
 	int channels=0, services=0;
 	if (!f)
 		eFatal("[eDVBDB] couldn't save lame channel db!");
-	fprintf(f, "eDVB services /5/\n");
+	fprintf(f, "eDVB services /4/\n");
 	fprintf(f, "transponders\n");
 	for (std::map<eDVBChannelID, channel>::const_iterator i(m_channels.begin());
 			i != m_channels.end(); ++i)
