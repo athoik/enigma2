@@ -51,10 +51,10 @@ eDVBScan::~eDVBScan()
 int eDVBScan::isValidONIDTSID(int orbital_position, eOriginalNetworkID onid, eTransportStreamID tsid)
 {
 	/*
-	 * Assume cable and terrestrial ONIDs/TSIDs are always valid,
+	 * Assume cable terrestrial and atsc ONIDs/TSIDs are always valid,
 	 * don't check them against the satellite blacklist.
 	 */
-	if (orbital_position == 0xFFFF || orbital_position == 0xEEEE) return 1;
+	if (orbital_position == 0xFFFF || orbital_position == 0xEEEE || orbital_position == 0xDDDD) return 1;
 
 	int ret;
 	switch (onid.get())
@@ -542,6 +542,14 @@ void eDVBScan::addChannelToScan(iDVBFrontendParameters *feparm)
 			parm.guard_interval, parm.code_rate_LP, parm.code_rate_HP, parm.bandwidth);
 		break;
 	}
+	case iDVBFrontend::feATSC:
+	{
+		eDVBFrontendParametersATSC parm;
+		feparm->getATSC(parm);
+		SCAN_eDebug("[eDVBScan] try to add atsc %d %d %d %d",
+			parm.frequency, parm.modulation, parm.inversion, parm.system);
+		break;
+	}
 	}
 
 	int found_count=0;
@@ -981,6 +989,15 @@ void eDVBScan::channelDone()
 						m_pmt_in_progress->first);
 					break;
 				}
+				case iDVBFrontend::feATSC:
+				{
+					eDVBFrontendParametersATSC parm;
+					m_ch_current->getATSC(parm);
+					snprintf(sname, 255, "%d SID 0x%02x",
+						parm.frequency/1000,
+						m_pmt_in_progress->first);
+					break;
+				}
 			}
 			SCAN_eDebug("[eDVBScan] name '%s', provider_name '%s'", sname, pname);
 			service->m_service_name = convertDVBUTF8(sname);
@@ -1015,6 +1032,7 @@ void eDVBScan::channelDone()
 				case iDVBFrontend::feSatellite:
 				case iDVBFrontend::feTerrestrial:
 				case iDVBFrontend::feCable:
+				case iDVBFrontend::feATSC:
 				{
 					ePtr<iDVBFrontend> fe;
 					if (!m_channel->getFrontend(fe))
@@ -1084,6 +1102,7 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 	{
 		bool clearTerrestrial=false;
 		bool clearCable=false;
+		bool clearATSC=false;
 		std::set<unsigned int> scanned_sat_positions;
 
 		for (std::map<eServiceReferenceDVB, ePtr<eDVBService> >::const_iterator
@@ -1125,6 +1144,11 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 						clearCable=true;
 						break;
 					}
+					case iDVBFrontend::feATSC:
+					{
+						clearATSC=true;
+						break;
+					}
 				}
 			}
 		}
@@ -1156,6 +1180,11 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 						clearCable=true;
 						break;
 					}
+					case iDVBFrontend::feATSC:
+					{
+						clearATSC=true;
+						break;
+					}
 				}
 			}
 		}
@@ -1170,6 +1199,12 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 		{
 			eDVBChannelID chid;
 			chid.dvbnamespace=0xFFFF0000;
+			db->removeServices(chid);
+		}
+		if (clearATSC)
+		{
+			eDVBChannelID chid;
+			chid.dvbnamespace=0xDDDD0000;
 			db->removeServices(chid);
 		}
 		for (std::set<unsigned int>::iterator x(scanned_sat_positions.begin()); x != scanned_sat_positions.end(); ++x)
@@ -1206,6 +1241,7 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 			}
 			case iDVBFrontend::feSatellite: // no update of any transponder parameter yet
 			case iDVBFrontend::feCable:
+			case iDVBFrontend::feATSC:
 				break;
 		}
 
