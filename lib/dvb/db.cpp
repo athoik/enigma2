@@ -643,6 +643,7 @@ void eDVBDB::saveServicelist(const char *file)
 		eDVBFrontendParametersSatellite sat;
 		eDVBFrontendParametersTerrestrial ter;
 		eDVBFrontendParametersCable cab;
+		eDVBFrontendParametersATSC atsc;
 		unsigned int flags;  // flagOnlyFree yet..
 		ch.m_frontendParameters->getFlags(flags);
 		if (!ch.m_frontendParameters->getDVBS(sat))
@@ -705,6 +706,11 @@ void eDVBDB::saveServicelist(const char *file)
 		{
 			fprintf(f, "\tc %d:%d:%d:%d:%d:%d:%d\n",
 				cab.frequency, cab.symbol_rate, cab.inversion, cab.modulation, cab.fec_inner, flags, cab.system);
+		}
+		else if (!ch.m_frontendParameters->getATSC(atsc))
+		{
+			fprintf(f, "\ta %d:%d:%d:%d:%d\n",
+				atsc.frequency, atsc.inversion, atsc.modulation, flags, atsc.system);
 		}
 		fprintf(f, "/\n");
 		channels++;
