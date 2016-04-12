@@ -148,7 +148,10 @@ int eComponentScan::start(int feid, int flags, int networkid)
 							db->removeFlags(eDVBService::dxNewFound, 0xEEEE0000, -1, -1, -1);
 							break;
 						case iDVBFrontend::feATSC:
-							db->removeFlags(eDVBService::dxNewFound, 0xDDDD0000, -1, -1, -1);
+							eDVBFrontendParametersATSC parm;
+							tp->getATSC(parm);
+							int ns = parm.system == eDVBFrontendParametersATSC::System_ATSC ? 0xEEEE0000 : 0xFFFF0000;
+							db->removeFlags(eDVBService::dxNewFound, ns, -1, -1, -1);
 							break;
 					}
 				}

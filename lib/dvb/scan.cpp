@@ -51,10 +51,10 @@ eDVBScan::~eDVBScan()
 int eDVBScan::isValidONIDTSID(int orbital_position, eOriginalNetworkID onid, eTransportStreamID tsid)
 {
 	/*
-	 * Assume cable terrestrial and atsc ONIDs/TSIDs are always valid,
+	 * Assume cable and terrestrial ONIDs/TSIDs are always valid,
 	 * don't check them against the satellite blacklist.
 	 */
-	if (orbital_position == 0xFFFF || orbital_position == 0xEEEE || orbital_position == 0xDDDD) return 1;
+	if (orbital_position == 0xFFFF || orbital_position == 0xEEEE) return 1;
 
 	int ret;
 	switch (onid.get())
@@ -1102,7 +1102,6 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 	{
 		bool clearTerrestrial=false;
 		bool clearCable=false;
-		bool clearATSC=false;
 		std::set<unsigned int> scanned_sat_positions;
 
 		for (std::map<eServiceReferenceDVB, ePtr<eDVBService> >::const_iterator
@@ -1146,7 +1145,12 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 					}
 					case iDVBFrontend::feATSC:
 					{
-						clearATSC=true;
+						eDVBFrontendParametersATSC parm;
+						(*it)->getATSC(parm);
+						if (parm.system == eDVBFrontendParametersATSC::System_ATSC)
+							clearTerrestrial = true;
+						else
+							clearCable = true;
 						break;
 					}
 				}
@@ -1182,7 +1186,12 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 					}
 					case iDVBFrontend::feATSC:
 					{
-						clearATSC=true;
+						eDVBFrontendParametersATSC parm;
+						(*it)->getATSC(parm);
+						if (parm.system == eDVBFrontendParametersATSC::System_ATSC)
+							clearTerrestrial = true;
+						else
+							clearCable = true;
 						break;
 					}
 				}
@@ -1199,12 +1208,6 @@ void eDVBScan::insertInto(iDVBChannelList *db, bool backgroundscanresult)
 		{
 			eDVBChannelID chid;
 			chid.dvbnamespace=0xFFFF0000;
-			db->removeServices(chid);
-		}
-		if (clearATSC)
-		{
-			eDVBChannelID chid;
-			chid.dvbnamespace=0xDDDD0000;
 			db->removeServices(chid);
 		}
 		for (std::set<unsigned int>::iterator x(scanned_sat_positions.begin()); x != scanned_sat_positions.end(); ++x)
