@@ -128,8 +128,8 @@ class ServiceScan:
 								tp.Modulation_QAM64 : "QAM64",
 								tp.Modulation_QAM128 : "QAM128",
 								tp.Modulation_QAM256 : "QAM256",
-								tp.Modulation_VSB_8 : "VSB8",
-								tp.Modulation_VSB_16 : "VSB16"
+								tp.Modulation_VSB_8 : "8VSB",
+								tp.Modulation_VSB_16 : "16VSB"
 							}.get(tp.modulation, ""),
 							freqMHz.replace(".0",""),
 							{

@@ -215,8 +215,8 @@ def ConvertToHumanReadable(tp, type = None):
 			eDVBFrontendParametersATSC.Modulation_QAM64 : "QAM64",
 			eDVBFrontendParametersATSC.Modulation_QAM128 : "QAM128",
 			eDVBFrontendParametersATSC.Modulation_QAM256 : "QAM256",
-			eDVBFrontendParametersATSC.Modulation_VSB_8 : "VSB8",
-			eDVBFrontendParametersATSC.Modulation_VSB_16 : "VSB16"}.get(tp.get("modulation"))
+			eDVBFrontendParametersATSC.Modulation_VSB_8 : "8VSB",
+			eDVBFrontendParametersATSC.Modulation_VSB_16 : "16VSB"}.get(tp.get("modulation"))
 		ret["inversion"] = {
 			eDVBFrontendParametersATSC.Inversion_Unknown : _("Auto"),
 			eDVBFrontendParametersATSC.Inversion_On : _("On"),
