@@ -412,7 +412,7 @@ RESULT eDVBFrontendParameters::getHash(unsigned long &hash) const
 		case iDVBFrontend::feATSC:
 		{
 			hash = atsc.system == eDVBFrontendParametersATSC::System_ATSC ? 0xEEEE0000 : 0xFFFF0000;
-			hash |= (atsc.frequency/1000)&0xFFFF;
+			hash |= (atsc.frequency/1000000)&0xFFFF;
 			return 0;
 		}
 		default:
