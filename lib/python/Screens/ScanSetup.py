@@ -787,7 +787,8 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 					self.list.append(self.TerrestrialRegionEntry)
 		elif nim.isCompatible("ATSC"):
 			if self.scan_type_atsc.value == "single_transponder":
-				self.list.append(getConfigListEntry(_("System"), self.scan_ats.system))
+				self.systemEntry = getConfigListEntry(_("System"), self.scan_ats.system)
+				self.list.append(self.systemEntry)
 				self.list.append(getConfigListEntry(_("Frequency"), self.scan_ats.frequency))
 				self.list.append(getConfigListEntry(_("Inversion"), self.scan_ats.inversion))
 				self.list.append(getConfigListEntry(_("Modulation"), self.scan_ats.modulation))
