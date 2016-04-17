@@ -1699,6 +1699,9 @@ def InitNimManager(nimmgr, update_slots = []):
 		if slot.canBeCompatible("DVB-T"):
 			createTerrestrialConfig(nim, x)
 			empty = False
+		if slot.canBeCompatible("ATSC"):
+			createATSCConfig(nim, x)
+			empty = False
 		if empty:
 			empty_slots += 1
 
