@@ -1136,7 +1136,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 		else:
 			defaultCabSearchType = "single_transponder"
 
-		if frontendData is not None and ttype == "ATSC":
+		if frontendData is not None and ttype == "ATSC" and self.predefinedATSCTranspondersList() is not None:
 			defaultATSCSearchType = "predefined_transponder"
 		else:
 			defaultATSCSearchType = "single_transponder"
