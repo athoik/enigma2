@@ -189,6 +189,10 @@ class Satfinder(ScanSetup, ServiceScan):
 				self.list.append(getConfigListEntry(_('Transponder'), self.TerrestrialTransponders))
 		elif nimmanager.nim_slots[int(self.satfinder_scan_nims.value)].isCompatible("ATSC"):
 			self.typeOfTuningEntry = getConfigListEntry(_('Tune'), self.tuning_type)
+			if len(nimmanager.getTranspondersATSC(int(self.satfinder_scan_nims.value))) < 1: # only show 'predefined transponder' if transponders exist
+				self.tuning_type.value = "single_transponder"
+			else:
+				self.list.append(self.typeOfTuningEntry)
 			if self.tuning_type.value == "single_transponder":
 				self.systemEntry = getConfigListEntry(_("System"), self.scan_ats.system)
 				self.list.append(self.systemEntry)
