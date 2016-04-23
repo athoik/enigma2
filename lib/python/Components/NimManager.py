@@ -680,7 +680,9 @@ class NimManager:
 
 	def getTranspondersATSC(self, nim):
 		nimConfig = config.Nims[nim]
-		return self.transpondersatsc[self.atscList[nimConfig.atsc.index][0]]
+		if nimConfig.configMode.value != "nothing":
+			return self.transpondersatsc[self.atscList[nimConfig.atsc.index][0]]
+		return []
 
 	def getCableDescription(self, nim):
 		return self.cablesList[config.Nims[nim].scan_provider.index][0]
