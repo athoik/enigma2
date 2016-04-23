@@ -227,7 +227,7 @@ class Satfinder(ScanSetup, ServiceScan):
 
 		satfinder_nim_list = []
 		for n in nimmanager.nim_slots:
-			if not any([n.isCompatible(x) for "DVB-S", "DVB-T", "DVB-C", "ATSC"]):
+			if not any([n.isCompatible(x) for x in "DVB-S", "DVB-T", "DVB-C", "ATSC"]):
 				continue
 			if n.config_mode  in ("loopthrough", "satposdepends", "nothing"):
 				continue
@@ -425,7 +425,7 @@ class Satfinder(ScanSetup, ServiceScan):
 				self.transponder[11]  # plp_id
 			)
 			tlist.append(parm)
-		elif nimmanager.nim_slots[int(self.satfinder_scan_nims.value)].isCompatible("DVB-C")
+		elif nimmanager.nim_slots[int(self.satfinder_scan_nims.value)].isCompatible("DVB-C"):
 			self.addCabTransponder(tlist,
 				self.transponder[0], # frequency
 				self.transponder[1], # sr
