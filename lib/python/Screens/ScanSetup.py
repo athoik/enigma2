@@ -897,7 +897,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 			elif ttype == "ATSC":
 				defaultATSC["frequency"] = frontendData.get("frequency", 47400000) / 1000
 				defaultATSC["inversion"] = frontendData.get("inversion", eDVBFrontendParametersATSC.Inversion_Unknown)
-				defaultATSC["modulation"] = frontendData.get("constellation", eDVBFrontendParametersATSC.Modulation_Auto)
+				defaultATSC["modulation"] = frontendData.get("modulation", eDVBFrontendParametersATSC.Modulation_Auto)
 				defaultATSC["system"] = frontendData.get("system", eDVBFrontendParametersATSC.System_ATSC)
 
 		self.scan_sat = ConfigSubsection()
