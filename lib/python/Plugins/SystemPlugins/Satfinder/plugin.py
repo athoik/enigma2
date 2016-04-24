@@ -25,6 +25,7 @@ class Satfinder(ScanSetup, ServiceScan):
 
 		self.typeOfTuningEntry = None
 		self.systemEntry = None
+		self.systemEntryATSC = None
 		self.satfinderTunerEntry = None
 		self.satEntry = None
 		self.typeOfInputEntry = None
@@ -74,7 +75,7 @@ class Satfinder(ScanSetup, ServiceScan):
 
 	def newConfig(self):
 		cur = self["config"].getCurrent()
-		if cur in (self.typeOfTuningEntry, self.systemEntry, self.typeOfInputEntry):
+		if cur in (self.typeOfTuningEntry, self.systemEntry, self.typeOfInputEntry, self.systemEntryATSC):
 			self.createSetup()
 		elif cur == self.satfinderTunerEntry:
 			self.feid = int(self.satfinder_scan_nims.value)
@@ -194,8 +195,8 @@ class Satfinder(ScanSetup, ServiceScan):
 			else:
 				self.list.append(self.typeOfTuningEntry)
 			if self.tuning_type.value == "single_transponder":
-				self.systemEntry = getConfigListEntry(_("System"), self.scan_ats.system)
-				self.list.append(self.systemEntry)
+				self.systemEntryATSC = getConfigListEntry(_("System"), self.scan_ats.system)
+				self.list.append(self.systemEntryATSC)
 				self.list.append(getConfigListEntry(_("Frequency"), self.scan_ats.frequency))
 				self.list.append(getConfigListEntry(_("Inversion"), self.scan_ats.inversion))
 				self.list.append(getConfigListEntry(_("Modulation"), self.scan_ats.modulation))
