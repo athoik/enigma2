@@ -497,6 +497,7 @@ static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int vers
 			atsc.frequency = frequency;
 			atsc.inversion = inversion;
 			atsc.modulation = modulation;
+			atsc.system = system;
 			ePtr<eDVBFrontendParameters> feparm = new eDVBFrontendParameters;
 			feparm->setATSC(atsc);
 			feparm->setFlags(flags);
