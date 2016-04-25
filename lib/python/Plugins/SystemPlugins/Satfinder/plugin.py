@@ -441,8 +441,8 @@ class Satfinder(ScanSetup, ServiceScan):
 		elif nimmanager.nim_slots[int(self.satfinder_scan_nims.value)].isCompatible("ATSC"):
 			self.addATSCTransponder(tlist,
 				self.transponder[0], # frequency
-				self.transponder[1], # inversion
-				self.transponder[2], # modulation
+				self.transponder[1], # modulation
+				self.transponder[2], # inversion
 				self.transponder[3]  # system
 			)
 		self.startScan(tlist, self.feid)

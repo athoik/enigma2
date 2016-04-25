@@ -1199,8 +1199,8 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 	def addTerTransponder(self, tlist, *args, **kwargs):
 		tlist.append(buildTerTransponder(*args, **kwargs))
 
-	def addATSCTransponder(self, tlist, frequency, inversion, modulation, system):
-		print "Add ATSC frequency: %s inversion: %s modulation: %s system: %s" % (frequency, inversion, modulation, system)
+	def addATSCTransponder(self, tlist, frequency, modulation, inversion, system):
+		print "Add ATSC frequency: %s inversion: %s modulation: %s system: %s" % (frequency, modulation, inversion, system)
 		parm = eDVBFrontendParametersATSC()
 		parm.frequency = frequency
 		parm.inversion = inversion
@@ -1347,8 +1347,8 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 			if self.scan_type_atsc.value == "single_transponder":
 				self.addATSCTransponder(tlist,
 						frequency = self.scan_ats.frequency.value * 1000,
-						inversion = self.scan_ats.inversion.value,
 						modulation = self.scan_ats.modulation.value,
+						inversion = self.scan_ats.inversion.value,
 						system = self.scan_ats.system.value)
 				removeAll = False
 			elif self.scan_type_atsc.value == "predefined_transponder":
