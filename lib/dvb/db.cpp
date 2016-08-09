@@ -493,10 +493,8 @@ static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int vers
 			atsc.inversion = inversion;
 			atsc.modulation = modulation;
 			atsc.system = system;
-			ePtr<eDVBFrontendParameters> feparm = new eDVBFrontendParameters;
 			feparm->setATSC(atsc);
 			feparm->setFlags(flags);
-			return feparm;
 		}
 		default:
 			return NULL;
@@ -696,6 +694,7 @@ void eDVBDB::saveServicelist(const char *file)
 		fprintf(g, "#     DVBS2 FEPARMS:   s:frequency:symbol_rate:polarisation:fec:orbital_position:inversion:flags:system:modulation:rolloff:pilot\n");
 		fprintf(g, "#     DVBT  FEPARMS:   t:frequency:bandwidth:code_rate_HP:code_rate_LP:modulation:transmission_mode:guard_interval:hierarchy:inversion:flags:system:plp_id\n");
 		fprintf(g, "#     DVBC  FEPARMS:   c:frequency:symbol_rate:inversion:modulation:fec_inner:flags:system\n");
+		fprintf(g, "#     ATSC  FEPARMS:   a:frequency:inversion:modulation:flags:system\n");
 		fprintf(g, "# Services    : s:service_id:dvb_namespace:transport_stream_id:original_network_id:service_type:0,\"service_name\"[,p:provider_name][,c:cached_pid]*[,C:cached_capid]*[,f:flags]\n");
 	}
 
