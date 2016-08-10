@@ -391,9 +391,14 @@ void eDVBDB::parseServiceData(ePtr<eDVBService> s, std::string str)
 	}
 }
 
-static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int version)
+static ePtr<eDVBFrontendParameters> parseFrontendData(char * line, int version)
 {
 	ePtr<eDVBFrontendParameters> feparm = new eDVBFrontendParameters;
+	char * options = strchr(line, ',');
+
+	if (options)
+		*options++ = '\0'; // options points to a option block or to a '\0'
+
 	switch(line[0])
 	{
 		case 's':
@@ -422,9 +427,20 @@ static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int vers
 			sat.modulation = modulation;
 			sat.rolloff = rolloff;
 			sat.pilot = pilot;
+
+			while (options) // search option block
+			{
+				char * next = strchr(options, ',');
+				if (next)
+					*next++ = '\0';
+				if (strncmp(options, "MIS/PLS:", 8) == 0)
+					sscanf(options+8, "%d:%d:%d", &is_id, &pls_code, &pls_mode);
+				options = next;
+			}
 			sat.is_id = is_id;
 			sat.pls_mode = pls_mode & 3;
 			sat.pls_code = pls_code & 0x3FFFF;
+
 			feparm->setDVBS(sat);
 			feparm->setFlags(flags);
 			break;
@@ -679,7 +695,7 @@ void eDVBDB::saveServicelist(const char *file)
 		fprintf(g, "eDVB services /5/\n");
 		fprintf(g, "# Transponders: t:dvb_namespace:transport_stream_id:original_network_id,FEPARMS\n");
 		fprintf(g, "#     DVBS  FEPARMS:   s:frequency:symbol_rate:polarisation:fec:orbital_position:inversion:flags\n");
-		fprintf(g, "#     DVBS2 FEPARMS:   s:frequency:symbol_rate:polarisation:fec:orbital_position:inversion:flags:system:modulation:rolloff:pilot[:is_id:pls_code:pls_mode]\n");
+		fprintf(g, "#     DVBS2 FEPARMS:   s:frequency:symbol_rate:polarisation:fec:orbital_position:inversion:flags:system:modulation:rolloff:pilot[,MIS/PLS:is_id:pls_code:pls_mode]\n");
 		fprintf(g, "#     DVBT  FEPARMS:   t:frequency:bandwidth:code_rate_HP:code_rate_LP:modulation:transmission_mode:guard_interval:hierarchy:inversion:flags:system:plp_id\n");
 		fprintf(g, "#     DVBC  FEPARMS:   c:frequency:symbol_rate:inversion:modulation:fec_inner:flags:system\n");
 		fprintf(g, "# Services    : s:service_id:dvb_namespace:transport_stream_id:original_network_id:service_type:0,\"service_name\"[,p:provider_name][,c:cached_pid]*[,C:cached_capid]*[,f:flags]\n");
@@ -723,9 +739,9 @@ void eDVBDB::saveServicelist(const char *file)
 					(sat.pls_code & 0x3FFFF) != eDVBFrontendParametersSatellite::PLS_Root ||
 					(sat.pls_mode & 3) != 0)
 				{
-					fprintf(f, ":%d:%d:%d", sat.is_id, sat.pls_code & 0x3FFFF, sat.pls_mode & 3);
+					fprintf(f, ",MIS/PLS:%d:%d:%d", sat.is_id, sat.pls_code & 0x3FFFF, sat.pls_mode & 3);
 					if (g)
-						fprintf(g, ":%d:%d:%d", sat.is_id, sat.pls_code & 0x3FFFF, sat.pls_mode & 3);
+						fprintf(g, ",MIS/PLS:%d:%d:%d", sat.is_id, sat.pls_code & 0x3FFFF, sat.pls_mode & 3);
 				}
 
 			}
