@@ -493,6 +493,7 @@ static ePtr<eDVBFrontendParameters> parseFrontendData(const char* line, int vers
 			atsc.system = system;
 			feparm->setATSC(atsc);
 			feparm->setFlags(flags);
+			break;
 		}
 		default:
 			return NULL;
