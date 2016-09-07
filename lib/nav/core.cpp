@@ -33,7 +33,7 @@ RESULT eNavigation::playService(const eServiceReference &service)
 	if (m_runningService)
 	{
 		m_runningService->setTarget(m_decoder);
-		m_runningService->connectEvent(slot(*this, &eNavigation::serviceEvent), m_service_event_conn);
+		m_runningService->connectEvent(sigc::mem_fun(*this, &eNavigation::serviceEvent), m_service_event_conn);
 		res = m_runningService->start();
 	}
 	return res;
@@ -91,7 +91,7 @@ RESULT eNavigation::recordService(const eServiceReference &ref, ePtr<iRecordable
 		else
 		{
 			ePtr<eConnection> conn;
-			service->connectEvent(slot(*this, &eNavigation::recordEvent), conn);
+			service->connectEvent(sigc::mem_fun(*this, &eNavigation::recordEvent), conn);
 			m_recordings[service]=conn;
 			m_recordings_services[service]=ref;
 		}

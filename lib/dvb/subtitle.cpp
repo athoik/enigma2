@@ -1094,7 +1094,7 @@ eDVBSubtitleParser::eDVBSubtitleParser(iDVBDemux *demux)
 	if (demux->createPESReader(eApp, m_pes_reader))
 		eDebug("[eDVBSubtitleParser] failed to create PES reader!");
 	else
-		m_pes_reader->connectRead(slot(*this, &eDVBSubtitleParser::processData), m_read_connection);
+		m_pes_reader->connectRead(sigc::mem_fun(*this, &eDVBSubtitleParser::processData), m_read_connection);
 }
 
 eDVBSubtitleParser::~eDVBSubtitleParser()

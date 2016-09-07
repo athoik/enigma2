@@ -5,7 +5,6 @@
 
 #define CONNECT(_signal, _slot) _signal.connect(sigc::mem_fun(*this, &_slot))
 #define CONNECT_EXTRA(_signal, _slot, extra_args...) _signal.connect(bind(sigc::mem_fun(*this, &_slot), extra_args))
-#define slot(x, y)	sigc::mem_fun(x, y)
 
 #define PSignal		ePsignal
 

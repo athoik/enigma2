@@ -70,7 +70,7 @@ eAMLTSMPEGDecoder::eAMLTSMPEGDecoder(eDVBDemux *demux, int decoder)
 {
 	eDebug("[eAMLTSMPEGDecoder] SETTING UP DECODER                   ------------ WETEK");
 	if (m_demux)
-		m_demux->connectEvent(slot(*this, &eAMLTSMPEGDecoder::demux_event), m_demux_event_conn);
+		m_demux->connectEvent(sigc::mem_fun(*this, &eAMLTSMPEGDecoder::demux_event), m_demux_event_conn);
 	memset(&m_codec, 0, sizeof(codec_para_t ));
 	memset(&am_sysinfo, 0, sizeof(dec_sysinfo_t));
 	memset(&am_param, 0, sizeof(arm_audio_info));

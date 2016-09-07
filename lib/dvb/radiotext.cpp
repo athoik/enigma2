@@ -18,9 +18,9 @@ eDVBRdsDecoder::eDVBRdsDecoder(iDVBDemux *demux, int type)
 	if (demux->createPESReader(eApp, m_pes_reader))
 		eDebug("failed to create PES reader!");
 	else if (type == 0)
-		m_pes_reader->connectRead(slot(*this, &eDVBRdsDecoder::processData), m_read_connection);
+		m_pes_reader->connectRead(sigc::mem_fun(*this, &eDVBRdsDecoder::processData), m_read_connection);
 	else
-		m_pes_reader->connectRead(slot(*this, &eDVBRdsDecoder::gotAncillaryData), m_read_connection);
+		m_pes_reader->connectRead(sigc::mem_fun(*this, &eDVBRdsDecoder::gotAncillaryData), m_read_connection);
 	CONNECT(m_abortTimer->timeout, eDVBRdsDecoder::abortNonAvail);
 }
 

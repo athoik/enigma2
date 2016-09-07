@@ -327,7 +327,7 @@ int eDVBServiceRecord::doRecord()
 		}
 		m_record->setTargetFD(fd);
 		m_record->setTargetFilename(m_filename);
-		m_record->connectEvent(slot(*this, &eDVBServiceRecord::recordEvent), m_con_record_event);
+		m_record->connectEvent(sigc::mem_fun(*this, &eDVBServiceRecord::recordEvent), m_con_record_event);
 
 		m_target_fd = fd;
 	}
