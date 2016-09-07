@@ -41,7 +41,7 @@ public:
 class eStreamThread;
 class eServiceTS: public iPlayableService, public iPauseableService,
 	public iServiceInformation, public iSeekableService,
-	public iAudioTrackSelection, public iAudioChannelSelection, public Object
+	public iAudioTrackSelection, public iAudioChannelSelection, public sigc::trackable
 {
 DECLARE_REF(eServiceTS);
 public:
@@ -118,7 +118,7 @@ private:
 	void setAudioPid(int pid, int type);
 };
 
-class eStreamThread: public eThread, public Object {
+class eStreamThread: public eThread, public sigc::trackable {
 DECLARE_REF(eStreamThread);
 public:
 	eStreamThread();

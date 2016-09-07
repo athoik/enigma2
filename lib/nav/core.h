@@ -7,7 +7,7 @@
 #include <map>
 #include <set>
 
-class eNavigation: public iObject, public Object
+class eNavigation: public iObject, public sigc::trackable
 {
 	static eNavigation *instance;
 	DECLARE_REF(eNavigation);

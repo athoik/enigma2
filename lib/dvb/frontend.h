@@ -48,7 +48,7 @@ public:
 #include <lib/dvb/sec.h>
 class eSecCommandList;
 
-class eDVBFrontend: public iDVBFrontend, public Object
+class eDVBFrontend: public iDVBFrontend, public sigc::trackable
 {
 public:
 	enum {

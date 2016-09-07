@@ -15,7 +15,7 @@
 #include <libsig_comp.h>
 #include <lib/base/buffer.h>
 
-class eSocket: public Object
+class eSocket: public sigc::trackable
 {
 private:
 	int issocket;

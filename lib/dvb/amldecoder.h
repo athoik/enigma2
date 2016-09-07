@@ -35,7 +35,7 @@ extern "C" {
 class eSocketNotifier;
 
 
-class eAMLTSMPEGDecoder: public Object, public iTSMPEGDecoder
+class eAMLTSMPEGDecoder: public sigc::trackable, public iTSMPEGDecoder
 {
 	DECLARE_REF(eAMLTSMPEGDecoder);
 private:

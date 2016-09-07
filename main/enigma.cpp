@@ -95,7 +95,7 @@ void keyEvent(const eRCKey &key)
 #include <lib/dvb/dvbtime.h>
 #include <lib/dvb/epgcache.h>
 
-class eMain: public eApplication, public Object
+class eMain: public eApplication, public sigc::trackable
 {
 	eInit init;
 	ePythonConfigQuery config;

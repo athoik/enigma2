@@ -608,7 +608,7 @@ class iTSMPEGDecoder;
 	   everything is specified in pts and not file positions */
 
 	/* implemented in dvb.cpp */
-class eCueSheet: public iObject, public Object
+class eCueSheet: public iObject, public sigc::trackable
 {
 	DECLARE_REF(eCueSheet);
 public:

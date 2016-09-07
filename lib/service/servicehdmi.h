@@ -37,7 +37,7 @@ public:
 	long long getFileSize(const eServiceReference &ref);
 };
 
-class eServiceHDMI: public iPlayableService, public iServiceInformation, public Object
+class eServiceHDMI: public iPlayableService, public iServiceInformation, public sigc::trackable
 {
 	DECLARE_REF(eServiceHDMI);
 public:
@@ -81,7 +81,7 @@ private:
 	ePtr<iTSMPEGDecoder> m_decoder;
 };
 
-class eServiceHDMIRecord: public eDVBServiceBase, public iRecordableService, public Object
+class eServiceHDMIRecord: public eDVBServiceBase, public iRecordableService, public sigc::trackable
 {
 	DECLARE_REF(eServiceHDMIRecord);
 public:

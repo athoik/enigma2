@@ -55,7 +55,7 @@ private:
 	int openDemux(void);
 };
 
-class eDVBSectionReader: public iDVBSectionReader, public Object
+class eDVBSectionReader: public iDVBSectionReader, public sigc::trackable
 {
 	DECLARE_REF(eDVBSectionReader);
 	int fd;
@@ -74,7 +74,7 @@ public:
 	RESULT connectRead(const sigc::slot1<void,const uint8_t*> &read, ePtr<eConnection> &conn);
 };
 
-class eDVBPESReader: public iDVBPESReader, public Object
+class eDVBPESReader: public iDVBPESReader, public sigc::trackable
 {
 	DECLARE_REF(eDVBPESReader);
 	int m_fd;
@@ -143,7 +143,7 @@ protected:
 	void flush();
 };
 
-class eDVBTSRecorder: public iDVBTSRecorder, public Object
+class eDVBTSRecorder: public iDVBTSRecorder, public sigc::trackable
 {
 	DECLARE_REF(eDVBTSRecorder);
 public:

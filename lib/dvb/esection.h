@@ -8,7 +8,7 @@
 #define TABLE_eDebugNoNewLineStart(x...) do { if (m_debug) eDebugNoNewLineStart(x); } while(0)
 #define TABLE_eDebugNoNewLine(x...) do { if (m_debug) eDebugNoNewLine(x); } while(0)
 
-class eGTable: public iObject, public Object
+class eGTable: public iObject, public sigc::trackable
 {
 	DECLARE_REF(eGTable);
 	ePtr<iDVBSectionReader> m_reader;
@@ -84,7 +84,7 @@ public:
 	}
 };
 
-class eAUGTable: public Object
+class eAUGTable: public sigc::trackable
 {
 protected:
 	void slotTableReady(int);

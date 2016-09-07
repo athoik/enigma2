@@ -22,7 +22,7 @@ struct service
 	bool scrambled;
 };
 
-class eDVBScan: public Object, public iObject
+class eDVBScan: public sigc::trackable, public iObject
 {
 	DECLARE_REF(eDVBScan);
 		/* chid helper functions: */

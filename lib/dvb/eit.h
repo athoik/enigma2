@@ -6,7 +6,7 @@
 #include <dvbsi++/event_information_section.h>
 #include <lib/service/event.h>
 
-class eDVBServiceEITHandler: public Object
+class eDVBServiceEITHandler: public sigc::trackable
 {
 	ePtr<iDVBDemux> m_demux;
 	eAUTable<eTable<EventInformationSection> > m_EIT;

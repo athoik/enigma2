@@ -219,7 +219,7 @@ public:
 
 #endif /* no SWIG */
 
-class eFastScan: public Object, public iObject
+class eFastScan: public sigc::trackable, public iObject
 {
 	DECLARE_REF(eFastScan);
 

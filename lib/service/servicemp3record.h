@@ -8,7 +8,7 @@
 
 class eServiceMP3Record:
 	public iRecordableService,
-	public Object
+	public sigc::trackable
 {
 	DECLARE_REF(eServiceMP3Record);
 public:

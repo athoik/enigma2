@@ -11,7 +11,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
-class eSocketMMIHandler: public Object
+class eSocketMMIHandler: public sigc::trackable
 {
 	eIOBuffer buffer;
 	int listenfd, connfd, clilen;

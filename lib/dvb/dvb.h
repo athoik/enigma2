@@ -23,7 +23,7 @@ class eDVBChannel;
 	   (and how to deallocate it). */
 class iDVBAdapter;
 
-class eDVBRegisteredFrontend: public iObject, public Object
+class eDVBRegisteredFrontend: public iObject, public sigc::trackable
 {
 	DECLARE_REF(eDVBRegisteredFrontend);
 	ePtr<eTimer> disable;
@@ -154,7 +154,7 @@ public:
 #endif // SWIG
 
 SWIG_IGNORE(eDVBResourceManager);
-class eDVBResourceManager: public iObject, public Object
+class eDVBResourceManager: public iObject, public sigc::trackable
 {
 	DECLARE_REF(eDVBResourceManager);
 	int avail, busy;
@@ -259,7 +259,7 @@ SWIG_EXTEND(ePtr<eDVBResourceManager>,
 class eDVBChannelFilePush;
 
 	/* iDVBPVRChannel includes iDVBChannel. don't panic. */
-class eDVBChannel: public iDVBPVRChannel, public iFilePushScatterGather, public Object
+class eDVBChannel: public iDVBPVRChannel, public iFilePushScatterGather, public sigc::trackable
 {
 	DECLARE_REF(eDVBChannel);
 	friend class eDVBResourceManager;

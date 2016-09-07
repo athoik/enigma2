@@ -46,7 +46,7 @@ public:
 
 #endif  // SWIG
 
-class eDVBLocalTimeHandler: public Object
+class eDVBLocalTimeHandler: public sigc::trackable
 {
 	DECLARE_REF(eDVBLocalTimeHandler);
 	struct channel_data

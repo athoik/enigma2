@@ -6,7 +6,7 @@
 #include <lib/dvb/pesparse.h>
 #include <lib/gdi/gpixmap.h>
 
-class eDVBRdsDecoder: public iObject, public ePESParser, public Object
+class eDVBRdsDecoder: public iObject, public ePESParser, public sigc::trackable
 {
 	DECLARE_REF(eDVBRdsDecoder);
 	int msgPtr, bsflag, qdar_pos, t_ptr, qdarmvi_show;

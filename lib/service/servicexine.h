@@ -42,7 +42,7 @@ public:
 typedef struct _GstElement GstElement;
 
 class eServiceXine: public iPlayableService, public iPauseableService,
-	public iServiceInformation, public iSeekableService, public Object
+	public iServiceInformation, public iSeekableService, public sigc::trackable
 {
 	DECLARE_REF(eServiceXine);
 public:

@@ -8,7 +8,4 @@
 
 #define PSignal		ePsignal
 
-typedef sigc::connection	Connection;
-typedef sigc::trackable		Object;
-
 #endif // __LIBSIG_COMP_H

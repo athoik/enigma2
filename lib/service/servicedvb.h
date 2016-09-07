@@ -84,7 +84,7 @@ public:
 
 class eDVBServicePlay: public eDVBServiceBase,
 		public iPlayableService, public iPauseableService,
-		public iSeekableService, public Object, public iServiceInformation,
+		public iSeekableService, public sigc::trackable, public iServiceInformation,
 		public iAudioTrackSelection, public iAudioChannelSelection,
 		public iSubserviceList, public iTimeshiftService,
 		public iCueSheet, public iSubtitleOutput, public iAudioDelay,

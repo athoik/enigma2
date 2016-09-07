@@ -26,7 +26,7 @@ public:
 	virtual ~eDVBAudio();
 };
 
-class eDVBVideo: public iObject, public Object
+class eDVBVideo: public iObject, public sigc::trackable
 {
 	DECLARE_REF(eDVBVideo);
 private:
@@ -85,7 +85,7 @@ public:
 	virtual ~eDVBTText();
 };
 
-class eTSMPEGDecoder: public Object, public iTSMPEGDecoder
+class eTSMPEGDecoder: public sigc::trackable, public iTSMPEGDecoder
 {
 	DECLARE_REF(eTSMPEGDecoder);
 private:

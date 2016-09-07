@@ -33,7 +33,7 @@ struct eDVBTeletextSubtitlePage
 	void clear() { m_elements.clear(); }
 };
 
-class eDVBTeletextParser: public iObject, public ePESParser, public Object
+class eDVBTeletextParser: public iObject, public ePESParser, public sigc::trackable
 {
 	DECLARE_REF(eDVBTeletextParser);
 public:

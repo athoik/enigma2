@@ -14,7 +14,7 @@ class eDVBServiceRecord: public eDVBServiceBase,
 	public iRecordableService,
 	public iStreamableService,
 	public iSubserviceList,
-	public Object
+	public sigc::trackable
 {
 	DECLARE_REF(eDVBServiceRecord);
 public:

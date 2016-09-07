@@ -15,7 +15,7 @@
 
 typedef long long pts_t;
 
-class eTSFileSectionReader: public iDVBSectionReader, public Object
+class eTSFileSectionReader: public iDVBSectionReader, public sigc::trackable
 {
 	DECLARE_REF(eTSFileSectionReader);
 	unsigned char sectionData[4096];

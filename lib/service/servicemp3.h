@@ -122,7 +122,7 @@ typedef enum { ctNone, ctMPEGTS, ctMPEGPS, ctMKV, ctAVI, ctMP4, ctVCD, ctCDA, ct
 
 class eServiceMP3: public iPlayableService, public iPauseableService,
 	public iServiceInformation, public iSeekableService, public iAudioTrackSelection, public iAudioChannelSelection,
-	public iSubtitleOutput, public iStreamedService, public iAudioDelay, public Object, public iCueSheet
+	public iSubtitleOutput, public iStreamedService, public iAudioDelay, public sigc::trackable, public iCueSheet
 {
 	DECLARE_REF(eServiceMP3);
 public:

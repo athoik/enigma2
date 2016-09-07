@@ -50,7 +50,7 @@ public:
  * Automatically creates a eSocketNotifier and gives you a callback.
  */
 template<class T>
-class eFixedMessagePump: public Object, FD
+class eFixedMessagePump: public sigc::trackable, FD
 {
 	eSingleLock lock;
 	ePtr<eSocketNotifier> sn;
@@ -120,7 +120,7 @@ public:
 };
 #endif
 
-class ePythonMessagePump: public eMessagePumpMT, public Object
+class ePythonMessagePump: public eMessagePumpMT, public sigc::trackable
 {
 	ePtr<eSocketNotifier> sn;
 	void do_recv(int)

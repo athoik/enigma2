@@ -15,7 +15,7 @@ public:
 	virtual ~iFilePushScatterGather() {}
 };
 
-class eFilePushThread: public eThread, public Object
+class eFilePushThread: public eThread, public sigc::trackable
 {
 public:
 	eFilePushThread(int blocksize, size_t buffersize);
@@ -60,7 +60,7 @@ private:
 	void recvEvent(const int &evt);
 };
 
-class eFilePushThreadRecorder: public eThread, public Object
+class eFilePushThreadRecorder: public eThread, public sigc::trackable
 {
 public:
 	eFilePushThreadRecorder(unsigned char* buffer, size_t buffersize);

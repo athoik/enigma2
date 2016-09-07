@@ -109,7 +109,7 @@ struct eDVBSubtitlePage
 };
 
 class eDVBSubtitleParser
-	:public iObject, public ePESParser, public Object
+	:public iObject, public ePESParser, public sigc::trackable
 {
 	DECLARE_REF(eDVBSubtitleParser);
 	subtitle_page *m_pages;
