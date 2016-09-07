@@ -125,7 +125,7 @@ public:
 	virtual ~eDVBSubtitleParser();
 	int start(int pid, int composition_page_id, int ancillary_page_id);
 	int stop();
-	void connectNewPage(const Slot1<void, const eDVBSubtitlePage&> &slot, ePtr<eConnection> &connection);
+	void connectNewPage(const sigc::slot1<void, const eDVBSubtitlePage&> &slot, ePtr<eConnection> &connection);
 private:
 	void subtitle_process_line(subtitle_region *region, subtitle_region_object *object, int line, uint8_t *data, int len);
 	int subtitle_process_pixel_data(subtitle_region *region, subtitle_region_object *object, int *linenr, int *linep, uint8_t *data);

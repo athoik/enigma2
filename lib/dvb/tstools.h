@@ -29,7 +29,7 @@ public:
 	RESULT setBufferSize(int size) { return 0; }
 	RESULT start(const eDVBSectionFilterMask &mask);
 	RESULT stop();
-	RESULT connectRead(const Slot1<void,const uint8_t*> &read, ePtr<eConnection> &conn);
+	RESULT connectRead(const sigc::slot1<void,const uint8_t*> &read, ePtr<eConnection> &conn);
 };
 
 class eDVBTSTools : public eDVBPMTParser

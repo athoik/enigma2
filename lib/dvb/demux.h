@@ -29,7 +29,7 @@ public:
 	RESULT getCADemuxID(uint8_t &id) { id = demux; return 0; }
 	RESULT getCAAdapterID(uint8_t &id) { id = adapter; return 0; }
 	RESULT flush();
-	RESULT connectEvent(const Slot1<void,int> &event, ePtr<eConnection> &conn);
+	RESULT connectEvent(const sigc::slot1<void,int> &event, ePtr<eConnection> &conn);
 	int openDVR(int flags);
 
 	int getRefCount() { return ref; }
@@ -71,7 +71,7 @@ public:
 	RESULT setBufferSize(int size);
 	RESULT start(const eDVBSectionFilterMask &mask);
 	RESULT stop();
-	RESULT connectRead(const Slot1<void,const uint8_t*> &read, ePtr<eConnection> &conn);
+	RESULT connectRead(const sigc::slot1<void,const uint8_t*> &read, ePtr<eConnection> &conn);
 };
 
 class eDVBPESReader: public iDVBPESReader, public Object
@@ -89,7 +89,7 @@ public:
 	RESULT setBufferSize(int size);
 	RESULT start(int pid);
 	RESULT stop();
-	RESULT connectRead(const Slot2<void,const uint8_t*, int> &read, ePtr<eConnection> &conn);
+	RESULT connectRead(const sigc::slot2<void,const uint8_t*, int> &read, ePtr<eConnection> &conn);
 };
 
 class eDVBRecordFileThread: public eFilePushThreadRecorder
@@ -167,7 +167,7 @@ public:
 	RESULT getCurrentPCR(pts_t &pcr);
 	RESULT getFirstPTS(pts_t &pts);
 
-	RESULT connectEvent(const Slot1<void,int> &event, ePtr<eConnection> &conn);
+	RESULT connectEvent(const sigc::slot1<void,int> &event, ePtr<eConnection> &conn);
 private:
 	RESULT startPID(int pid);
 	void stopPID(int pid);

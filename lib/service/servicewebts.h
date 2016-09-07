@@ -79,7 +79,7 @@ public:
 	virtual ~eServiceWebTS();
 
 	// iPlayableService
-	RESULT connectEvent(const Slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
+	RESULT connectEvent(const sigc::slot2<void,iPlayableService*,int> &event, ePtr<eConnection> &connection);
 	RESULT start();
 	RESULT stop();
 	RESULT pause(ePtr<iPauseableService> &ptr);

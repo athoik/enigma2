@@ -16,13 +16,6 @@
 #define Signal4		sigc::signal4
 #define Signal5		sigc::signal5
 
-#define Slot0		sigc::slot0
-#define Slot1		sigc::slot1
-#define Slot2		sigc::slot2
-#define Slot3		sigc::slot3
-#define Slot4		sigc::slot4
-#define Slot5		sigc::slot5
-
 typedef sigc::connection	Connection;
 typedef sigc::trackable		Object;
 

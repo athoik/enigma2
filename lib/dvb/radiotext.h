@@ -25,7 +25,7 @@ public:
 	eDVBRdsDecoder(iDVBDemux *demux, int type);
 	~eDVBRdsDecoder();
 	int start(int pid);
-	void connectEvent(const Slot1<void, int> &slot, ePtr<eConnection> &connection);
+	void connectEvent(const sigc::slot1<void, int> &slot, ePtr<eConnection> &connection);
 	const char *getRadioText() { return (const char*)message; }
 	const char *getRtpText() { return (const char*)rtplus_osd; }
 	ePyObject getRassPictureMask();

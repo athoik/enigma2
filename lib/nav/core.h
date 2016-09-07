@@ -28,9 +28,9 @@ class eNavigation: public iObject, public Object
 public:
 
 	RESULT playService(const eServiceReference &service);
-	RESULT connectEvent(const Slot1<void,int> &event, ePtr<eConnection> &connection);
-	RESULT connectRecordEvent(const Slot2<void,ePtr<iRecordableService>,int> &event, ePtr<eConnection> &connection);
-/*	int connectServiceEvent(const Slot1<void,iPlayableService*,int> &event, ePtr<eConnection> &connection); */
+	RESULT connectEvent(const sigc::slot1<void,int> &event, ePtr<eConnection> &connection);
+	RESULT connectRecordEvent(const sigc::slot2<void,ePtr<iRecordableService>,int> &event, ePtr<eConnection> &connection);
+/*	int connectServiceEvent(const sigc::slot1<void,iPlayableService*,int> &event, ePtr<eConnection> &connection); */
 	RESULT getCurrentService(ePtr<iPlayableService> &service);
 	RESULT stopService(void);
 
