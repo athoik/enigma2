@@ -188,7 +188,7 @@ class eDVBResourceManager: public iObject, public sigc::trackable
 	sigc::signal1<void,eDVBChannel*> m_channelAdded;
 
 	eUsePtr<iDVBChannel> m_cached_channel;
-	Connection m_cached_channel_state_changed_conn;
+	sigc::connection m_cached_channel_state_changed_conn;
 	ePtr<eTimer> m_releaseCachedChannelTimer;
 	void DVBChannelStateChanged(iDVBChannel*);
 	void feStateChanged();
