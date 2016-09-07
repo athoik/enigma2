@@ -141,7 +141,7 @@ private:
 
 	eServiceReference m_ref;
 
-	Signal2<void,iPlayableService*,int> m_event;
+	sigc::signal2<void,iPlayableService*,int> m_event;
 
 	struct ddvd *m_ddvdconfig;
 	ePtr<gPixmap> m_pixmap;

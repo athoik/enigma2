@@ -219,7 +219,7 @@ protected:
 
 	void serviceEvent(int event);
 	void serviceEventTimeshift(int event);
-	Signal2<void,iPlayableService*,int> m_event;
+	sigc::signal2<void,iPlayableService*,int> m_event;
 
 	bool m_is_stream;
 

@@ -9,13 +9,6 @@
 
 #define PSignal		ePsignal
 
-#define Signal0		sigc::signal0
-#define Signal1		sigc::signal1
-#define Signal2		sigc::signal2
-#define Signal3		sigc::signal3
-#define Signal4		sigc::signal4
-#define Signal5		sigc::signal5
-
 typedef sigc::connection	Connection;
 typedef sigc::trackable		Object;
 

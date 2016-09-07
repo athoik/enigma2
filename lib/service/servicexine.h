@@ -94,7 +94,7 @@ private:
 	friend class eServiceFactoryXine;
 	std::string m_filename;
 	eServiceXine(const char *filename);
-	Signal2<void,iPlayableService*,int> m_event;
+	sigc::signal2<void,iPlayableService*,int> m_event;
 
 	xine_stream_t *stream;
 	xine_video_port_t *vo_port;

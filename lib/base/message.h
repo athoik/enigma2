@@ -96,7 +96,7 @@ class eFixedMessagePump: public Object, FD
 			eFatal("[eFixedMessagePump] write error %m");
 	}
 public:
-	Signal1<void,const T&> recv_msg;
+	sigc::signal1<void,const T&> recv_msg;
 	void send(const T &msg)
 	{
 		{

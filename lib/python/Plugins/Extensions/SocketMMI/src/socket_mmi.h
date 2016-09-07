@@ -24,7 +24,7 @@ class eSocketMMIHandler: public Object
 	char *name;
 public:
 	const char *getName() const { return name; }
-	Signal4<int, int, const unsigned char*, const void *, int> mmi_progress;
+	sigc::signal4<int, int, const unsigned char*, const void *, int> mmi_progress;
 	int send_to_mmisock( void *, size_t );
 	bool connected() { return !!connsn; }
 	eSocketMMIHandler();

@@ -15,7 +15,7 @@ class eNavigation: public iObject, public Object
 	ePtr<iServiceHandler> m_servicehandler;
 
 	ePtr<iPlayableService> m_runningService;
-	Signal1<void,int> m_event;
+	sigc::signal1<void,int> m_event;
 	ePtr<eConnection> m_service_event_conn;
 	void serviceEvent(iPlayableService* service, int event);
 
@@ -23,7 +23,7 @@ class eNavigation: public iObject, public Object
 	std::map<ePtr<iRecordableService>, eServiceReference, std::less<iRecordableService*> > m_recordings_services;
 	std::set<ePtr<iRecordableService>, std::less<iRecordableService*> > m_simulate_recordings;
 
-	Signal2<void,ePtr<iRecordableService>,int> m_record_event;
+	sigc::signal2<void,ePtr<iRecordableService>,int> m_record_event;
 	void recordEvent(iRecordableService* service, int event);
 public:
 

@@ -86,7 +86,7 @@ class eDVBScan: public Object, public iObject
 
 	void channelDone();
 
-	Signal1<void,int> m_event;
+	sigc::signal1<void,int> m_event;
 	RESULT processSDT(eDVBNamespace dvbnamespace, const ServiceDescriptionSection &sdt);
 
 	int m_flags;

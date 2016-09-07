@@ -634,7 +634,7 @@ public:
 	std::list<std::pair<pts_t,pts_t> > m_spans;	/* begin, end */
 	std::list<std::pair<int, pts_t> > m_seek_requests; /* relative, delta */
 	pts_t m_skipmode_ratio;
-	Signal1<void,int> m_event;
+	sigc::signal1<void,int> m_event;
 	ePtr<iDVBDemux> m_decoding_demux;
 	ePtr<iTSMPEGDecoder> m_decoder;
 };

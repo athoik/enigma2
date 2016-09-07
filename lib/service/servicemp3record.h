@@ -54,7 +54,7 @@ private:
 	static gboolean handleAutoPlugCont(GstElement *bin, GstPad *pad, GstCaps *caps, gpointer user_data);
 
 			/* events */
-	Signal2<void,iRecordableService*,int> m_event;
+	sigc::signal2<void,iRecordableService*,int> m_event;
 };
 
 #endif

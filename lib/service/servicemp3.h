@@ -317,7 +317,7 @@ private:
 	errorInfo m_errorInfo;
 	std::string m_download_buffer_path;
 	eServiceMP3(eServiceReference ref);
-	Signal2<void,iPlayableService*,int> m_event;
+	sigc::signal2<void,iPlayableService*,int> m_event;
 	enum
 	{
 		stIdle, stRunning, stStopped,

@@ -20,7 +20,7 @@ class eTSFileSectionReader: public iDVBSectionReader, public Object
 	DECLARE_REF(eTSFileSectionReader);
 	unsigned char sectionData[4096];
 	unsigned int sectionSize;
-	Signal1<void, const uint8_t*> read;
+	sigc::signal1<void, const uint8_t*> read;
 
 public:
 	eTSFileSectionReader(eMainloop *context);

@@ -50,7 +50,7 @@ private:
 	int m_pvr_fd;
 	friend class eAMLTSMPEGDecoder;
 #endif
-	Signal1<void, int> m_event;
+	sigc::signal1<void, int> m_event;
 
 	int openDemux(void);
 };
@@ -59,7 +59,7 @@ class eDVBSectionReader: public iDVBSectionReader, public Object
 {
 	DECLARE_REF(eDVBSectionReader);
 	int fd;
-	Signal1<void, const uint8_t*> read;
+	sigc::signal1<void, const uint8_t*> read;
 	ePtr<eDVBDemux> demux;
 	int active;
 	int checkcrc;
@@ -78,7 +78,7 @@ class eDVBPESReader: public iDVBPESReader, public Object
 {
 	DECLARE_REF(eDVBPESReader);
 	int m_fd;
-	Signal2<void, const uint8_t*, int> m_read;
+	sigc::signal2<void, const uint8_t*, int> m_read;
 	ePtr<eDVBDemux> m_demux;
 	int m_active;
 	void data(int);
@@ -175,7 +175,7 @@ private:
 	void filepushEvent(int event);
 
 	std::map<int,int> m_pids;
-	Signal1<void,int> m_event;
+	sigc::signal1<void,int> m_event;
 
 	ePtr<eDVBDemux> m_demux;
 

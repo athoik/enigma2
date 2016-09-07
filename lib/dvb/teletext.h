@@ -66,8 +66,8 @@ private:
 
 	void addSubtitleString(int color, std::string string, int source_line);
 
-	Signal0<void> m_new_subtitle_stream;
-	Signal1<void,const eDVBTeletextSubtitlePage&> m_new_subtitle_page;
+	sigc::signal0<void> m_new_subtitle_stream;
+	sigc::signal1<void,const eDVBTeletextSubtitlePage&> m_new_subtitle_page;
 };
 
 #endif

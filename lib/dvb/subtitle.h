@@ -116,7 +116,7 @@ class eDVBSubtitleParser
 	ePtr<iDVBPESReader> m_pes_reader;
 	ePtr<eConnection> m_read_connection;
 	pts_t m_show_time;
-	Signal1<void,const eDVBSubtitlePage&> m_new_subtitle_page;
+	sigc::signal1<void,const eDVBSubtitlePage&> m_new_subtitle_page;
 	int m_composition_page_id, m_ancillary_page_id;
 	bool m_seen_eod;
 	eSize m_display_size;

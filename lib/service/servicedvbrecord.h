@@ -67,7 +67,7 @@ private:
 
 			/* events */
 	void serviceEvent(int event);
-	Signal2<void,iRecordableService*,int> m_event;
+	sigc::signal2<void,iRecordableService*,int> m_event;
 
 			/* recorder events */
 	void recordEvent(int event);

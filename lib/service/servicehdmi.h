@@ -75,7 +75,7 @@ public:
 private:
 	friend class eServiceFactoryHDMI;
 	eServiceHDMI(eServiceReference ref);
-	Signal2<void,iPlayableService*, int> m_event;
+	sigc::signal2<void,iPlayableService*, int> m_event;
 	eServiceReference m_ref;
 	int m_decoder_index;
 	ePtr<iTSMPEGDecoder> m_decoder;
@@ -114,7 +114,7 @@ private:
 	int doRecord();
 
 	/* events */
-	Signal2<void,iRecordableService*,int> m_event;
+	sigc::signal2<void,iRecordableService*,int> m_event;
 
 	/* recorder events */
 	void recordEvent(int event);

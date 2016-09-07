@@ -71,7 +71,7 @@ public:
 		SATCR,                // current SatCR
 		NUM_DATA_ENTRIES
 	};
-	Signal1<void,iDVBFrontend*> m_stateChanged;
+	sigc::signal1<void,iDVBFrontend*> m_stateChanged;
 private:
 	DECLARE_REF(eDVBFrontend);
 	bool m_simulate;

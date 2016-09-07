@@ -39,7 +39,7 @@ private:
 	void process_qdar(unsigned char*);
 	ePtr<iDVBPESReader> m_pes_reader;
 	ePtr<eConnection> m_read_connection;
-	Signal1<void, int> m_event;
+	sigc::signal1<void, int> m_event;
 	ePtr<eTimer> m_abortTimer;
 };
 

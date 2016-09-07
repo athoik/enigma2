@@ -36,7 +36,7 @@ private:
 	int m_is_slow_motion, m_is_fast_forward, m_is_freezed;
 	ePtr<eSocketNotifier> m_sn;
 	void video_event(int what);
-	Signal1<void, struct iTSMPEGDecoder::videoEvent> m_event;
+	sigc::signal1<void, struct iTSMPEGDecoder::videoEvent> m_event;
 	int m_width, m_height, m_framerate, m_aspect, m_progressive;
 	static int readApiSize(int fd, int &xres, int &yres, int &aspect);
 public:
@@ -117,7 +117,7 @@ private:
 
 	void demux_event(int event);
 	void video_event(struct videoEvent);
-	Signal1<void, struct videoEvent> m_video_event;
+	sigc::signal1<void, struct videoEvent> m_video_event;
 	int m_video_clip_fd;
 	ePtr<eTimer> m_showSinglePicTimer;
 	void finishShowSinglePic(); // called by timer
