@@ -1726,10 +1726,10 @@ void eEPGCache::channel_data::startEPG()
 	if (eEPGCache::getInstance()->getEpgSources() & eEPGCache::ATSC_EIT && m_ATSC_MGTReader)
 	{
 		m_atsc_eit_index = 0;
-		m_ATSC_MGTReader->connectRead(slot(*this, &eEPGCache::channel_data::ATSC_MGTsection), m_ATSC_MGTConn);
-		m_ATSC_VCTReader->connectRead(slot(*this, &eEPGCache::channel_data::ATSC_VCTsection), m_ATSC_VCTConn);
-		m_ATSC_EITReader->connectRead(slot(*this, &eEPGCache::channel_data::ATSC_EITsection), m_ATSC_EITConn);
-		m_ATSC_ETTReader->connectRead(slot(*this, &eEPGCache::channel_data::ATSC_ETTsection), m_ATSC_ETTConn);
+		m_ATSC_MGTReader->connectRead(sigc::mem_fun(*this, &eEPGCache::channel_data::ATSC_MGTsection), m_ATSC_MGTConn);
+		m_ATSC_VCTReader->connectRead(sigc::mem_fun(*this, &eEPGCache::channel_data::ATSC_VCTsection), m_ATSC_VCTConn);
+		m_ATSC_EITReader->connectRead(sigc::mem_fun(*this, &eEPGCache::channel_data::ATSC_EITsection), m_ATSC_EITConn);
+		m_ATSC_ETTReader->connectRead(sigc::mem_fun(*this, &eEPGCache::channel_data::ATSC_ETTsection), m_ATSC_ETTConn);
 		mask.pid = 0x1ffb;
 		mask.data[0] = 0xc7;
 		mask.mask[0] = 0xff;
@@ -1776,7 +1776,7 @@ void eEPGCache::channel_data::ATSC_checkCompletion()
 		{
 			eDVBSectionFilterMask mask = {};
 			m_atsc_eit_index++;
-			m_ATSC_MGTReader->connectRead(slot(*this, &eEPGCache::channel_data::ATSC_MGTsection), m_ATSC_MGTConn);
+			m_ATSC_MGTReader->connectRead(sigc::mem_fun(*this, &eEPGCache::channel_data::ATSC_MGTsection), m_ATSC_MGTConn);
 			mask.pid = 0x1ffb;
 			mask.data[0] = 0xc7;
 			mask.mask[0] = 0xff;
@@ -1826,7 +1826,7 @@ void eEPGCache::channel_data::ATSC_MGTsection(const uint8_t *d)
 			mask.pid = (*table)->getPID();
 			mask.data[0] = 0xcb;
 			mask.mask[0] = 0xff;
-			m_ATSC_EITReader->connectRead(slot(*this, &eEPGCache::channel_data::ATSC_EITsection), m_ATSC_EITConn);
+			m_ATSC_EITReader->connectRead(sigc::mem_fun(*this, &eEPGCache::channel_data::ATSC_EITsection), m_ATSC_EITConn);
 			m_ATSC_EITReader->start(mask);
 		}
 		else if ((*table)->getTableType() == 0x0200 + m_atsc_eit_index)
@@ -1835,7 +1835,7 @@ void eEPGCache::channel_data::ATSC_MGTsection(const uint8_t *d)
 			mask.pid = (*table)->getPID();
 			mask.data[0] = 0xcc;
 			mask.mask[0] = 0xff;
-			m_ATSC_ETTReader->connectRead(slot(*this, &eEPGCache::channel_data::ATSC_ETTsection), m_ATSC_ETTConn);
+			m_ATSC_ETTReader->connectRead(sigc::mem_fun(*this, &eEPGCache::channel_data::ATSC_ETTsection), m_ATSC_ETTConn);
 			m_ATSC_ETTReader->start(mask);
 		}
 	}
