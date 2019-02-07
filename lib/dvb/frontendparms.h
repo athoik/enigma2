@@ -64,7 +64,7 @@ public:
 	};
 
 	enum {
-		No_T2MI_PLP_Id = eDVBFrontendParametersSatellite::No_Stream_Id_Filter
+		No_T2MI_PLP_Id = eDVBFrontendParametersSatellite::No_Stream_Id_Filter, T2MI_Default_Pid = 4096
 	};
 
 	bool no_rotor_command_on_tune;

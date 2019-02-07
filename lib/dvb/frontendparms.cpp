@@ -386,6 +386,17 @@ int eDVBSatelliteTransponderData::getT2MIPlpId() const
 	return t2mi_plp_id & 0xFF;
 }
 
+int eDVBSatelliteTransponderData::getT2MIPid() const
+{
+	if (originalValues) return transponderParameters.t2mi_pid;
+
+	/* FIXME HACK ALERT use unused by enigma2 ISDBT SEGMENT IDX to pass T2MI PID */
+	unsigned int t2mi_pid = getProperty(DTV_ISDBT_SB_SEGMENT_IDX);
+	if (t2mi_pid == eDVBFrontendParametersSatellite::No_T2MI_PLP_Id) return transponderParameters.t2mi_pid;
+	if (!(t2mi_pid & 0x80000000)) return transponderParameters.t2mi_pid;
+	return (t2mi_pid >> 2) & 0x1FFF;
+}
+
 DEFINE_REF(eDVBCableTransponderData);
 
 eDVBCableTransponderData::eDVBCableTransponderData(struct dtv_property *dtvproperties, unsigned int propertycount, eDVBFrontendParametersCable &transponderparms, bool original)

@@ -125,9 +125,11 @@ class Satfinder(ScanSetup, ServiceScan):
 		elif cur == self.t2mi_plp_id_boolEntry:
 			if self.t2mi_plp_id_boolEntry[1].value:
 				self.scan_sat.t2mi_plp_id.value = 0 if self.t2mi_plp_id_memory < 0 else self.t2mi_plp_id_memory
+				self.scan_sat.t2mi_pid = eDVBFrontendParametersSatellite.T2MI_Default_Pid if self.t2mi_plp_id_memory < 0 else self.scan_sat.t2mi_pid
 			else:
 				self.t2mi_plp_id_memory = self.scan_sat.t2mi_plp_id.value
 				self.scan_sat.t2mi_plp_id.value = eDVBFrontendParametersSatellite.No_T2MI_PLP_Id
+				self.scan_sat.t2mi_pid.value = eDVBFrontendParametersSatellite.T2MI_Default_Pid
 			self.createSetup()
 			self.retune()
 
@@ -185,6 +187,7 @@ class Satfinder(ScanSetup, ServiceScan):
 					self.list.append(self.t2mi_plp_id_boolEntry)
 					if self.scan_sat.t2mi_plp_id_bool.value:
 						self.list.append(getConfigListEntry(_('T2MI PLP ID'), self.scan_sat.t2mi_plp_id))
+						self.list.append(getConfigListEntry(_('T2MI PID'), self.scan_sat.t2mi_pid))
 			elif self.tuning_type.value == "predefined_transponder":
 				self.updatePreDefTransponders()
 				self.preDefTransponderEntry = getConfigListEntry(_("Transponder"), self.preDefTransponders)
