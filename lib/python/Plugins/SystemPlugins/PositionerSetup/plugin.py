@@ -165,7 +165,7 @@ class PositionerSetup(Screen):
 			cur.get("is_id", eDVBFrontendParametersSatellite.No_Stream_Id_Filter),
 			cur.get("pls_mode", eDVBFrontendParametersSatellite.PLS_Gold),
 			cur.get("pls_code", eDVBFrontendParametersSatellite.PLS_Default_Gold_Code),
-			cur.get("t2mi_plp_id", eDVBFrontendParametersSatellite.No_T2MI_PLP_Id)
+			cur.get("t2mi_plp_id", eDVBFrontendParametersSatellite.No_T2MI_PLP_Id),
 			cur.get("t2mi_pid, eDVBFrontendParametersSatellite.T2MI_Default_Pid))
 
 		self.tuner.tune(tp)

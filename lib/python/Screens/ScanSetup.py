@@ -944,7 +944,7 @@ class ScanSetup(ConfigListScreen, Screen, CableTransponderSearchSupport, Terrest
 					defaultSat["pls_mode"] = frontendData.get("pls_mode", defaultSat["pls_mode"])
 					defaultSat["pls_code"] = frontendData.get("pls_code", defaultSat["pls_code"])
 					defaultSat["t2mi_plp_id"] = frontendData.get("t2mi_plp_id", defaultSat["t2mi_plp_id"])
-					defaultSat["t2mi_pid"] = rontendData.get("t2mi_pid", defaultSat["t2mi_pid"])
+					defaultSat["t2mi_pid"] = frontendData.get("t2mi_pid", defaultSat["t2mi_pid"])
 				else:
 					defaultSat["fec"] = frontendData.get("fec_inner", eDVBFrontendParametersSatellite.FEC_Auto)
 				defaultSat["modulation"] = frontendData.get("modulation", eDVBFrontendParametersSatellite.Modulation_QPSK)

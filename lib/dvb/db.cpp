@@ -1395,7 +1395,7 @@ PyObject *eDVBDB::readSatellites(ePyObject sat_list, ePyObject sat_dict, ePyObje
 				pls_code = eDVBFrontendParametersSatellite::PLS_Default_Gold_Code;
 				pls_mode = eDVBFrontendParametersSatellite::PLS_Gold;
 				t2mi_plp_id = eDVBFrontendParametersSatellite::No_T2MI_PLP_Id;
-				t2mi_pid = eDVBFrontendParametersSatellite::PLS_Default_PID;
+				t2mi_pid = eDVBFrontendParametersSatellite::T2MI_Default_Pid;
 				tsid = -1;
 				onid = -1;
 
