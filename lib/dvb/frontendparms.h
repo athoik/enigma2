@@ -228,6 +228,7 @@ public:
 	int getPLSMode() const;
 	int getPLSCode() const;
 	int getT2MIPlpId() const;
+	int getT2MIPid() const;
 	int getBandwidth() const;
 	int getCodeRateLp() const;
 	int getCodeRateHp() const;
@@ -263,6 +264,7 @@ public:
 	int getPLSMode() const;
 	int getPLSCode() const;
 	int getT2MIPlpId() const;
+	int getT2MIPid() const;
 };
 
 class eDVBCableTransponderData : public eDVBTransponderData
