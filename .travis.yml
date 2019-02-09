@@ -38,6 +38,7 @@ before_install:
    - eval "${MATRIX_EVAL}"
 
 script:
+- $CXX --version
 - echo installing libdvbsi++
 - pushd .
 - cd /tmp
