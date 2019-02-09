@@ -15,6 +15,9 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
+    - g++-8
+    - g++-7
+    - g++-6
     - linux-libc-dev
     - git
     - build-essential
