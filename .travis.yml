@@ -6,9 +6,9 @@ dist: trusty
 
 env:
   matrix:
-  - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
-  - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-  - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+  - CC=gcc-8 CXX=g++-8
+  - CC=gcc-7 CXX=g++-7
+  - CC=gcc-6 CXX=g++-6
 
 addons:
   apt:
