@@ -1,14 +1,12 @@
 os: linux
 language: cpp
+compiler:
+  - gcc-8
+  - gcc-7
+  - gcc-6
 
 sudo: required
 dist: trusty
-
-env:
-  matrix:
-  - CC=gcc-8 CXX=g++-8
-  - CC=gcc-7 CXX=g++-7"
-  - CC=gcc-6 CXX=g++-6"
 
 addons:
   apt:
