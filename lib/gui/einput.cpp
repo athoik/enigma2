@@ -6,6 +6,7 @@
 
 eInput::eInput(eWidget *parent): eWidget(parent)
 {
+	m_cursor = 0;
 	m_mode = 1;
 	m_have_focus = 0;
 }

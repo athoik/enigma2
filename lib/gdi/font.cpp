@@ -257,9 +257,9 @@ fontRenderClass::~fontRenderClass()
 		font=font->next;
 		delete f;
 	}
-//	auskommentiert weil freetype und enigma die kritische masse des suckens ueberschreiten.
-//	FTC_Manager_Done(cacheManager);
-//	FT_Done_FreeType(library);
+	FT_Stroker_Done(stroker);
+	FTC_Manager_Done(cacheManager);
+	FT_Done_FreeType(library);
 }
 
 int fontRenderClass::getFont(ePtr<Font> &font, const std::string &face, int size, int tabwidth)

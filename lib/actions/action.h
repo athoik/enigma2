@@ -1,6 +1,7 @@
 #ifndef __lib_driver_action_h
 #define __lib_driver_action_h
 
+#include <stdint.h>
 #include <lib/base/object.h>
 
 #include <lib/python/python.h>
@@ -35,6 +36,10 @@ public:
 	void unbindKeyDomain(const std::string &domain);
 
 	void keyPressed(const std::string &device, int key, int flags);
+
+	enum {
+		lowestPrio = INT32_MIN, highestPrio = INT32_MAX
+	};
 
 #ifndef SWIG
 	static RESULT getInstance(ePtr<eActionMap> &);

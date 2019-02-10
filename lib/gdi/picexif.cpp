@@ -250,6 +250,7 @@ bool Cexif::DecodeExifPNG(const char * filename)
 	for (png_uint_32 i = 0; i < height; i++)
 		png_read_row(png_ptr, row, NULL);
 	png_read_end(png_ptr, info_ptr);
+	free(row);
 
 	png_textp text_ptr;
 	int num_text;

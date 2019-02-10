@@ -1182,6 +1182,14 @@ static void donot_delete_surface(gPixmap *pixmap)
 	pixmap->surface = NULL;
 }
 
+#ifdef SWIG
+gPixmap::gPixmap():
+	surface(NULL),
+	on_dispose(NULL)
+{
+}
+#endif
+
 gPixmap::gPixmap(gUnmanagedSurface *surface):
 	surface(surface),
 	on_dispose(donot_delete_surface)
