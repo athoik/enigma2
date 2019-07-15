@@ -92,6 +92,7 @@ class eDVBScan: public sigc::trackable, public iObject
 	sigc::signal1<void,int> m_event;
 	RESULT processSDT(eDVBNamespace dvbnamespace, const ServiceDescriptionSection &sdt);
 	RESULT processVCT(eDVBNamespace dvbnamespace, const VirtualChannelTableSection &vct, int onid);
+	RESULT processBAT(const unsigned long &hash, const BouquetAssociationSection &bat);
 
 	int m_flags;
 	int m_networkid;

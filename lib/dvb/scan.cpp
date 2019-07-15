@@ -1,7 +1,9 @@
 #include <fcntl.h>
 #include <lib/dvb/idvb.h>
+#include <dvbsi++/bouquet_name_descriptor.h>
 #include <dvbsi++/descriptor_tag.h>
 #include <dvbsi++/service_descriptor.h>
+#include <dvbsi++/service_list_descriptor.h>
 #include <dvbsi++/satellite_delivery_system_descriptor.h>
 #include <dvbsi++/s2_satellite_delivery_system_descriptor.h>
 #include <dvbsi++/terrestrial_delivery_system_descriptor.h>
@@ -24,6 +26,7 @@
 #include <lib/dvb/dvb.h>
 #include <lib/dvb/db.h>
 #include <errno.h>
+#include <sstream>
 #include "absdiff.h"
 
 #define SCAN_eDebug(x...) do { if (m_scan_debug) eDebug(x); } while(0)
@@ -783,6 +786,20 @@ void eDVBScan::channelDone()
 		for (i = m_VCT->getSections().begin(); i != m_VCT->getSections().end(); ++i)
 			processVCT(dvbnamespace, **i, onid);
 		m_ready &= ~validVCT;
+	}
+
+	if (m_ready & validBAT)
+	{
+		unsigned long hash = 0;
+		m_ch_current->getHash(hash);
+
+		SCAN_eDebug("[eDVBScan] BAT: ");
+		std::vector<BouquetAssociationSection*>::const_iterator i;
+		for (i = m_BAT->getSections().begin(); i != m_BAT->getSections().end(); ++i)
+		{
+			processBAT(hash, **i);
+		}
+		m_ready &= ~validBAT;
 	}
 
 	if (m_ready & validNIT)
@@ -1688,6 +1705,110 @@ RESULT eDVBScan::processVCT(eDVBNamespace dvbnamespace, const VirtualChannelTabl
 			m_abort_current_pmt = true;
 		else
 			m_pmts_to_read.erase(service_id);
+	}
+
+	return 0;
+}
+
+RESULT eDVBScan::processBAT(const unsigned long &hash, const BouquetAssociationSection &bat)
+{
+	const BouquetAssociationList &bouquets = *bat.getBouquets();
+	SCAN_eDebug("[eDVBScan] BAT Bouquet_id: %u", bat.getTableIdExtension()); // TODO: in BAT this is the bouquet_id?
+
+	std::vector<eServiceReferenceDVB> bouquetRefs;
+	std::string bouquetName;
+
+	for (auto&& bouquet : bouquets)
+	{
+		eOriginalNetworkID onid = eOriginalNetworkID(bouquet->getOriginalNetworkId());
+		eTransportStreamID tsid = eTransportStreamID(bouquet->getTransportStreamId());
+		eDVBNamespace dvbnamespace = buildNamespace(onid, tsid, hash);
+
+		for (DescriptorConstIterator desc = bouquet->getDescriptors()->begin();
+			desc != bouquet->getDescriptors()->end(); ++desc)
+		{
+			switch ((*desc)->getTag())
+			{
+			case BOUQUET_NAME_DESCRIPTOR:
+			{
+				BouquetNameDescriptor &d = (BouquetNameDescriptor&)**desc;
+				bouquetName = d.getBouquetName();
+				SCAN_eDebug("[eDVBScan] BAT name<%s>", bouquetName.c_str());
+				break;
+			}
+			case SERVICE_LIST_DESCRIPTOR:
+			{
+				ServiceListDescriptor &ss = (ServiceListDescriptor&)**desc;
+				for(auto&& s : *ss.getServiceList())
+				{
+					eServiceReferenceDVB ref = eServiceReferenceDVB(dvbnamespace, tsid, onid,
+						eServiceID(s->getServiceId()), s->getServiceType());
+					bouquetRefs.push_back(ref);
+				}
+				SCAN_eDebug("[eDVBScan] BAT ServiceListDesciptor<%x>", (*desc)->getTag());
+				break;
+			}
+			default:
+				SCAN_eDebug("[eDVBScan] BAT descr<%x>", (*desc)->getTag());
+				break;
+			}
+		}
+	}
+
+	if (bouquetRefs.empty())
+	{
+		return -1;
+	}
+
+	std::stringstream tmpName;
+	tmpName << bouquetName << "_BAT_" << bat.getTableIdExtension();
+	bouquetName = strip_non_graph(tmpName.str());
+
+	std::string bouquetname = "userbouquet." + bouquetName + ".tv";
+	std::string bouquetquery = "FROM BOUQUET \"" + bouquetname + "\" ORDER BY bouquet";
+	eServiceReference bouquetref(eServiceReference::idDVB, eServiceReference::flagDirectory, bouquetquery);
+	bouquetref.setData(0, 1); /* set bouquet 'servicetype' to tv (even though we probably have both tv and radio channels) */
+	eBouquet *bouquet = nullptr;
+	eServiceReference rootref(eServiceReference::idDVB, eServiceReference::flagDirectory, "FROM BOUQUET \"bouquets.tv\" ORDER BY bouquet");
+	ePtr<iDVBChannelList> db;
+	ePtr<eDVBResourceManager> res;
+	eDVBResourceManager::getInstance(res);
+	res->getChannelList(db);
+	if (!db->getBouquet(bouquetref, bouquet) && bouquet)
+	{
+		/* bouquet already exists, empty it before we continue */
+		bouquet->m_services.clear();
+	}
+	else
+	{
+		/* bouquet doesn't yet exist, create a new one */
+		if (!db->getBouquet(rootref, bouquet) && bouquet)
+		{
+			bouquet->m_services.push_back(bouquetref);
+			bouquet->flushChanges();
+		}
+		/* loading the bouquet seems to be the only way to add it to the bouquet list */
+		eDVBDB *dvbdb = eDVBDB::getInstance();
+		if (dvbdb) dvbdb->loadBouquet(bouquetname.c_str());
+		/* and now that it has been added to the list, we can find it */
+		db->getBouquet(bouquetref, bouquet);
+	}
+
+	if (bouquet)
+	{
+		bouquet->m_bouquet_name = bouquetName;
+
+		for (auto&& i : bouquetRefs)
+		{
+			bouquet->m_services.push_back(i);
+		}
+		bouquet->flushChanges();
+		eDVBDB::getInstance()->renumberBouquet();
+	}
+	else
+	{
+		eDebug("[eDVBScan] failed to create '%s' bouquet!", bouquetName.c_str());
+		return -1;
 	}
 
 	return 0;
