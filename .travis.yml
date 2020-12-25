@@ -1,37 +1,11 @@
 language: cpp
 
-sudo: required
 dist: bionic
-arch:
-  - amd64
-  - arm64
-
-addons:
-  apt:
-    packages:
-    - linux-libc-dev
-    - git
-    - build-essential
-    - automake
-    - libtool
-    - python-dev
-    - zlib1g-dev
-    - gettext
-    - swig
-    - libgstreamer1.0-dev
-    - libgstreamer-plugins-base1.0-dev
-    - libfreetype6-dev
-    - libsigc++-2.0-dev
-    - libfribidi-dev
-    - libssl-dev
-    - libavahi-client-dev
-    - libjpeg-turbo8-dev
-    - libgif-dev
+os: linux
 
 jobs:
   include:
-    - os: linux
-      arch:
+    - arch:
         - amd64
         - arm64
       addons:
@@ -44,9 +18,28 @@ jobs:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
 git:
-  depth: 10
+  depth: 1
 
 before_install:
+    - sudo apt-get update
+    - sudo apt-get install linux-libc-dev
+    - sudo apt-get install git
+    - sudo apt-get install build-essential
+    - sudo apt-get install automake
+    - sudo apt-get install libtool
+    - sudo apt-get install python-dev
+    - sudo apt-get install zlib1g-dev
+    - sudo apt-get install gettext
+    - sudo apt-get install swig
+    - sudo apt-get install libgstreamer1.0-dev
+    - sudo apt-get install libgstreamer-plugins-base1.0-dev
+    - sudo apt-get install libfreetype6-dev
+    - sudo apt-get install libsigc++-2.0-dev
+    - sudo apt-get install libfribidi-dev
+    - sudo apt-get install libssl-dev
+    - sudo apt-get install libavahi-client-dev
+    - sudo apt-get install libjpeg-turbo8-dev
+    - sudo apt-get install libgif-dev
     - eval "${MATRIX_EVAL}"
 
 script:
