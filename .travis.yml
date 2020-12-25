@@ -3,28 +3,50 @@ language: cpp
 dist: bionic
 os: linux
 
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-8
+    - g++-10
+    - linux-libc-dev
+    - git
+    - build-essential
+    - automake
+    - libtool
+    - python-dev
+    - zlib1g-dev
+    - gettext
+    - swig
+    - libgstreamer1.0-dev
+    - libgstreamer-plugins-base1.0-dev
+    - libfreetype6-dev
+    - libsigc++-2.0-dev
+    - libfribidi-dev
+    - libssl-dev
+    - libavahi-client-dev
+    - libjpeg-turbo8-dev
+    - libgif-dev
+
 jobs:
   include:
     - arch:
         - amd64
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     - arch:
         - arm64
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-8
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+    - arch:
+        - amd64
+      env:
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+    - arch:
+        - arm64
+      env:
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
 
 git:
   depth: 1
