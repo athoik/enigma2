@@ -19,7 +19,7 @@ jobs:
         sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
         sudo apt-get -q update
         sudo apt install g++-${{ matrix.gcc }}
-    - name: install packages
+    - name: install dev packages
       run: |
         sudo apt-get -q update
         sudo apt-get install linux-libc-dev
@@ -40,7 +40,7 @@ jobs:
         sudo apt-get install libavahi-client-dev
         sudo apt-get install libjpeg-turbo8-dev
         sudo apt-get install libgif-dev
-    - name: build
+    - name: build enigma2 dependencies
       env: 
         CC: "gcc-${{ matrix.gcc }}"
         CXX: "g++-${{ matrix.gcc }}"
@@ -70,6 +70,11 @@ jobs:
         make
         sudo make install
         popd
+    - name: build enigma2
+      env: 
+        CC: "gcc-${{ matrix.gcc }}"
+        CXX: "g++-${{ matrix.gcc }}"
+      run: |
         echo compiling enigma2
         autoreconf -i
         ./configure --with-libsdl=no --with-boxtype=nobox --enable-dependency-tracking ac_cv_prog_c_openmp=-fopenmp --with-textlcd
